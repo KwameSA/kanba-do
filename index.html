@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kanba-DO</title>
+    <link rel="stylesheet" href="main.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="top-btn-container">
+        <div class="top-btn-nav">
+          <button data-target="todo-app">DO</button>
+          <button data-target="todoing-app">DOING</button>
+          <button data-target="todone-app">DONE</button>
+        </div>
+        <button id="clearTasksBtn" class="top-btn-clr">RESET</button>
+      </div>
+      <div class="do-container">
+        <div class="todo-app">
+          <div class="header">
+            <h2>Kanba-DO<img src="/images/notes.png" /></h2>
+            <div class="sort-option">
+              <label for="sort-options">Sort By:</label>
+              <select id="sort-options">
+                <option value="date">Date Added</option>
+                <option value="alphabetical">Alphabetical</option>
+                <option value="checked">Checked Status</option>
+              </select>
+            </div>
+          </div>
+          <div class="do-input">
+            <input type="text" id="input-box" placeholder="Enter Your Text Here" />
+            <button onclick="addEntry()">ADD</button>
+          </div>
+          <div class="error-message" id="error-message" aria-live="assertive">Enter something to be accomplished!!</div>
+          <ul id="do-container"></ul>
+        </div>
+      </div>
+      <div class="do-container">
+        <div class="todoing-app">
+          <div class="header">
+            <h2>Kanba-DOING<img src="/images/notes.png" /></h2>
+            <div class="sort-option">
+              <label for="sort-options">Sort By:</label>
+              <select id="sort-options-doing">
+                <option value="date">Date Added</option>
+                <option value="alphabetical">Alphabetical</option>
+                <option value="checked">Checked Status</option>
+              </select>
+            </div>
+          </div>
+          <ul id="doing-container"></ul>
+        </div>
+      </div>
+      <div class="do-container">
+        <div class="todone-app">
+          <div class="header">
+            <h2>Kanba-DONE<img src="/images/notes.png" /></h2>
+            <div class="sort-option">
+              <label for="sort-options">Sort By:</label>
+              <select id="sort-options-done">
+                <option value="date">Date Added</option>
+                <option value="alphabetical">Alphabetical</option>
+                <option value="checked">Checked Status</option>
+              </select>
+            </div>
+          </div>
+          <ul id="done-container"></ul>
+        </div>
+      </div>
+    </div>
+    <script src="scripts.js"></script>
+  </body>
+</html>
