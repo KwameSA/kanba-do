@@ -194,6 +194,10 @@ function showError(message) {
   setTimeout(() => {
     errorMessage.style.animation = "vibrate 0.3s";
   }, 0);
+
+  setTimeout(() => {
+    errorMessage.style.display = "none";
+  }, 3000);
 }
 
 function saveTask() {
