@@ -39,17 +39,23 @@ function createTaskElement(text, status) {
   li.textContent = text;
   li.dataset.status = status;
 
-  const deleteButton = document.createElement("span");
-  deleteButton.innerHTML = "\u00d7";
-  deleteButton.onclick = () => {
-    if (status === "do") {
+  if (status === "do") {
+    const deleteButton = document.createElement("span");
+    deleteButton.innerHTML = "\u00d7";
+    deleteButton.classList.add("delete");
+    deleteButton.onclick = () => {
       li.remove();
-    } else {
-      moveTaskBackward(li, "previous");
-    }
-    saveTask();
-  };
-  li.appendChild(deleteButton);
+      saveTask();
+    };
+    li.appendChild(deleteButton);
+  }
+
+  if (status !== "done") {
+    const moveBackButton = document.createElement("span");
+    moveBackButton.innerHTML = "-";
+    moveBackButton.onclick = () => moveTaskBackward(li);
+    li.appendChild(moveBackButton);
+  }
 
   li.onclick = () => {
     const currentStatus = li.dataset.status;
@@ -57,9 +63,9 @@ function createTaskElement(text, status) {
     li.classList.toggle("checked");
 
     if (li.classList.contains("checked")) {
-      moveTaskForward(li, "next");
+      moveTaskForward(li);
     } else {
-      moveTaskBackward(li, "previous");
+      moveTaskBackward(li);
     }
     saveTask();
   };
@@ -70,15 +76,31 @@ function createTaskElement(text, status) {
 function moveTaskForward(task) {
   const status = task.dataset.status;
   const span = task.querySelector("span");
+  const deleteButton = task.querySelector(".delete");
 
   if (status === "do") {
     containers.doing.appendChild(task);
     task.dataset.status = "doing";
-    span.innerHTML = "-";
+
+    if (deleteButton) {
+      deleteButton.remove();
+    }
+
+    const moveBackButton = document.createElement("span");
+    moveBackButton.innerHTML = "-";
+    moveBackButton.onclick = () => moveTaskBackward(task);
+
+    task.appendChild(moveBackButton);
   } else if (status === "doing") {
     containers.done.appendChild(task);
     task.dataset.status = "done";
     span.remove();
+
+    const moveBackButton = task.querySelector("span");
+
+    if (moveBackButton) {
+      moveBackButton.remove();
+    }
   }
 }
 
@@ -89,11 +111,25 @@ function moveTaskBackward(task) {
   if (status === "done") {
     containers.doing.appendChild(task);
     task.dataset.status = "doing";
-    span.innerHTML = "-";
+
+    const moveBackButton = document.createElement("span");
+    moveBackButton.innerHTML = "-";
+    moveBackButton.onclick = () => moveTaskBackward(task);
+    task.appendChild(moveBackButton);
   } else if (status === "doing") {
     containers.do.appendChild(task);
     task.dataset.status = "do";
-    span.innerHTML = "\u00d7";
+
+    task.classList.remove("checked");
+    task.dataset.checked = "false";
+
+    const deleteButton = document.createElement("span");
+    deleteButton.innerHTML = "\u00d7";
+    deleteButton.onclick = () => {
+      task.remove();
+      saveTask();
+    };
+    task.appendChild(deleteButton);
   }
 }
 
@@ -168,7 +204,7 @@ function saveTask() {
       dateAdded: li.dataset.dateAdded,
     })),
     doing: Array.from(containers.doing.children).map((li) => ({
-      text: li.textContent.replace("\u00d7", "").trim(),
+      text: li.textContent.replace("\u00d7", "").replace("-", "").trim(),
       checked: li.classList.contains("checked"),
       dateAdded: li.dataset.dateAdded,
     })),
