@@ -266,3 +266,25 @@ li {
     transform 0.2s ease,
     opacity 0.2s ease;
 }
+
+#congratulations {
+  font-size: 24px;
+  color: green;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 20px;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    color: greenyellow;
+  }
+  50% {
+    color: #ffd700;
+  }
+  100% {
+    color: greenyellow;
+  }
+}
+
