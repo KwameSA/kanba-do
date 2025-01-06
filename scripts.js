@@ -203,21 +203,22 @@ function showError(message) {
 function saveTask() {
   const tasks = {
     do: Array.from(containers.do.children).map((li) => ({
-      text: li.textContent.replace("\u00d7", "").trim(),
+      text: li.textContent.replace(/[×-]/g, "").trim(),
       checked: li.classList.contains("checked"),
       dateAdded: li.dataset.dateAdded,
     })),
     doing: Array.from(containers.doing.children).map((li) => ({
-      text: li.textContent.replace("\u00d7", "").replace("-", "").trim(),
+      text: li.textContent.replace(/[×-]/g, "").trim(),
       checked: li.classList.contains("checked"),
       dateAdded: li.dataset.dateAdded,
     })),
     done: Array.from(containers.done.children).map((li) => ({
-      text: li.textContent.replace("\u00d7", "").trim(),
+      text: li.textContent.replace(/[×-]/g, "").trim(),
       checked: li.classList.contains("checked"),
       dateAdded: li.dataset.dateAdded,
     })),
   };
+
   localStorage.setItem("kanbaTasks", JSON.stringify(tasks));
 }
 
