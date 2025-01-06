@@ -395,20 +395,66 @@ function clearTasks() {
   containers.doing.innerHTML = "";
 }
 
-document.getElementById("clearTasksBtn").addEventListener("click", clearTasks);
-
 function checkCompletion() {
   const doContainer = containers.do;
   const doingContainer = containers.doing;
+  const congratsElement = document.getElementById("congratulations");
 
-  if (doContainer.children.length === 0 && doingContainer.children.length === 0) {
+  const messages = [
+    "Amazing! You've tackled everything on your plate!",
+    "Outstanding! Task list cleared like a champ!",
+    "Bravo! All tasks have been conquered!",
+    "Great job! You’ve crossed the finish line!",
+    "Fantastic! No more tasks, time to celebrate!",
+    "Mission accomplished! What a pro!",
+    "You’re on fire! Every task is done!",
+    "Boom! All tasks obliterated!",
+    "Victory is yours! Nothing left to do!",
+    "Cheers to your productivity!",
+    "Kudos! You’re officially task-free!",
+    "You’ve earned a break—awesome job!",
+    "You're a rockstar! No tasks left behind!",
+    "Legendary performance! All clear!",
+    "Amazing effort! Everything is checked off!",
+    "Fantastic work! You’ve aced it all!",
+    "Done and dusted! Time to relax.",
+    "Woohoo! Everything is complete!",
+    "Epic win! Your list is empty!",
+    "Incredible! You’ve achieved task-zero!",
+    "You’re unstoppable! No tasks remain!",
+    "Congratulations! You’ve mastered productivity!",
+    "What a superstar! Tasks cleared effortlessly.",
+    "Impressive! You’ve knocked it out of the park!",
+    "All done? You’re officially amazing!",
+    "Gold medal for productivity goes to you!",
+    "Bravo! Task-free zone achieved!",
+    "Excellence at its best! Great job!",
+    "You’re a legend! Mission complete.",
+    "Smashing success! Your list is history!",
+    "Phenomenal! Tasks cleared in style!",
+    "Outstanding effort! Nothing left undone.",
+    "Mic drop! You’ve done it all.",
+    "Unstoppable force! List zero achieved.",
+    "You’ve crushed it! Every task is history.",
+    "Hats off! Your tasks have been obliterated!",
+    "Round of applause! Task-free life achieved.",
+    "You're a wizard of productivity!",
+    "Perfection achieved! Tasks are gone.",
+    "High five! Your list is history.",
+    "You're the boss! Task-free status unlocked.",
+    "Masterclass in productivity! Everything’s done.",
+  ];
+
+  if (doingContainer.children.length === 0 && doContainer.children.length === 0) {
+    const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+    congratsElement.textContent = randomMessage;
     document.getElementById("congratulations").style.display = "block";
   } else {
     document.getElementById("congratulations").style.display = "none";
   }
-
-  document.getElementById("clearTasksBtn").addEventListener("click", function () {
-    clearTasks();
-    checkCompletion();
-  });
 }
+
+document.getElementById("clearTasksBtn").addEventListener("click", function () {
+  clearTasks();
+  document.getElementById("congratulations").style.display = "none";
+});
