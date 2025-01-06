@@ -9,6 +9,9 @@ const containers = {
 };
 
 function addEntry() {
+  const congratsElement = document.getElementById("congratulations");
+  congratsElement.style.display = "none";
+  
   const taskText = inputBox.value.trim();
 
   if (!taskText) {
