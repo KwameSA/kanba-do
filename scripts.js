@@ -112,6 +112,7 @@ function moveTaskForward(task) {
       moveBackButton.style.display = "none";
     }
   }
+  checkCompletion();
 }
 
 function moveTaskBackward(task) {
@@ -145,6 +146,8 @@ function moveTaskBackward(task) {
       moveBackButton.style.display = "none";
     }
   }
+
+  checkCompletion();
 }
 
 function addEventListenerForButtons() {
@@ -393,3 +396,19 @@ function clearTasks() {
 }
 
 document.getElementById("clearTasksBtn").addEventListener("click", clearTasks);
+
+function checkCompletion() {
+  const doContainer = containers.do;
+  const doingContainer = containers.doing;
+
+  if (doContainer.children.length === 0 && doingContainer.children.length === 0) {
+    document.getElementById("congratulations").style.display = "block";
+  } else {
+    document.getElementById("congratulations").style.display = "none";
+  }
+
+  document.getElementById("clearTasksBtn").addEventListener("click", function () {
+    clearTasks();
+    checkCompletion();
+  });
+}
