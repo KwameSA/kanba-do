@@ -30,3 +30,31 @@ Tasks can be added, moved between sections, and saved in local storage to persis
 
 1. Clone the repository to your local machine:
    ```bash
+         git clone https://github.com/KwameSa/kanba-do.git
+
+2. Clone the repository to your local machine:
+   ```Navigate to the project folder
+         cd kanban-do
+
+3. Open the index.html file in your browser to start using the app.
+
+## Usage
+1. Open the application in your browser.
+
+2. Add tasks by typing in the input box and hitting "Enter" or clicking the "Add" button.
+
+3. Organize tasks by dragging them between sections ("To Do," "Doing," "Done") or clicking on a task to mark it as completed.
+
+4. Edit a task by double-clicking on it and modifying its text.
+
+5. Use the sort dropdown to organize tasks based on alphabetical order, checked status, or date added.
+
+6. Clear all tasks using the "Clear All Tasks" button.
+
+## Contributing
+
+Feel free to fork this repository and submit issues or pull requests if you have improvements or bug fixes.
+
+## License
+
+This project is open source and available under the MIT License.
