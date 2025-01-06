@@ -39,27 +39,38 @@ function createTaskElement(text, status) {
   li.textContent = text;
   li.dataset.status = status;
 
+  let deleteButton, moveBackButton;
+
+  deleteButton = document.createElement("span");
+  deleteButton.innerHTML = "\u00d7";
+  deleteButton.classList.add("delete");
+  deleteButton.onclick = () => {
+    li.remove();
+    saveTask();
+  };
+  li.appendChild(deleteButton);
+
+  moveBackButton = document.createElement("span");
+  moveBackButton.innerHTML = "-";
+  moveBackButton.classList.add("move");
+  moveBackButton.onclick = () => moveTaskBackward(li);
+
+  li.appendChild(moveBackButton);
+
   if (status === "do") {
-    const deleteButton = document.createElement("span");
-    deleteButton.innerHTML = "\u00d7";
-    deleteButton.classList.add("delete");
-    deleteButton.onclick = () => {
-      li.remove();
-      saveTask();
-    };
-    li.appendChild(deleteButton);
+    moveBackButton.style.display = "none";
   }
 
-  if (status !== "done") {
-    const moveBackButton = document.createElement("span");
-    moveBackButton.innerHTML = "-";
-    moveBackButton.onclick = () => moveTaskBackward(li);
-    li.appendChild(moveBackButton);
+  if (status === "doing") {
+    moveBackButton.style.display = "inline";
+  }
+
+  if (status === "done") {
+    moveBackButton.style.display = "none";
   }
 
   li.onclick = () => {
     const currentStatus = li.dataset.status;
-
     li.classList.toggle("checked");
 
     if (li.classList.contains("checked")) {
@@ -75,47 +86,50 @@ function createTaskElement(text, status) {
 
 function moveTaskForward(task) {
   const status = task.dataset.status;
-  const span = task.querySelector("span");
   const deleteButton = task.querySelector(".delete");
+  const moveBackButton = task.querySelector(".move");
 
   if (status === "do") {
     containers.doing.appendChild(task);
     task.dataset.status = "doing";
 
     if (deleteButton) {
-      deleteButton.remove();
+      deleteButton.style.display = "none";
     }
 
-    const moveBackButton = document.createElement("span");
-    moveBackButton.innerHTML = "-";
-    moveBackButton.onclick = () => moveTaskBackward(task);
-
-    task.appendChild(moveBackButton);
+    if (moveBackButton) {
+      moveBackButton.style.display = "inline";
+    }
   } else if (status === "doing") {
     containers.done.appendChild(task);
     task.dataset.status = "done";
-    span.remove();
 
-    const moveBackButton = task.querySelector("span");
+    if (deleteButton) {
+      deleteButton.style.display = "none";
+    }
 
     if (moveBackButton) {
-      moveBackButton.remove();
+      moveBackButton.style.display = "none";
     }
   }
 }
 
 function moveTaskBackward(task) {
   const status = task.dataset.status;
-  const span = task.querySelector("span");
+  const deleteButton = task.querySelector(".delete");
+  const moveBackButton = task.querySelector(".move");
 
   if (status === "done") {
     containers.doing.appendChild(task);
     task.dataset.status = "doing";
 
-    const moveBackButton = document.createElement("span");
-    moveBackButton.innerHTML = "-";
-    moveBackButton.onclick = () => moveTaskBackward(task);
-    task.appendChild(moveBackButton);
+    if (deleteButton) {
+      deleteButton.style.display = "none";
+    }
+
+    if (moveBackButton) {
+      moveBackButton.style.display = "inline";
+    }
   } else if (status === "doing") {
     containers.do.appendChild(task);
     task.dataset.status = "do";
@@ -123,13 +137,13 @@ function moveTaskBackward(task) {
     task.classList.remove("checked");
     task.dataset.checked = "false";
 
-    const deleteButton = document.createElement("span");
-    deleteButton.innerHTML = "\u00d7";
-    deleteButton.onclick = () => {
-      task.remove();
-      saveTask();
-    };
-    task.appendChild(deleteButton);
+    if (deleteButton) {
+      deleteButton.style.display = "inline";
+    }
+
+    if (moveBackButton) {
+      moveBackButton.style.display = "none";
+    }
   }
 }
 
@@ -252,9 +266,30 @@ function showTask() {
     if (task.checked) li.classList.add("checked");
     containers.done.appendChild(li);
   });
+
+  updateDeleteButtonVisibility();
 }
 
 showTask();
+
+function updateDeleteButtonVisibility() {
+  containers.do.querySelectorAll("li").forEach((li) => {
+    const deleteButton = li.querySelector(".delete");
+    if (li.dataset.status === "do") {
+      deleteButton.style.display = "inline";
+    }
+  });
+
+  containers.doing.querySelectorAll("li").forEach((li) => {
+    const deleteButton = li.querySelector(".delete");
+    deleteButton.style.display = "none";
+  });
+
+  containers.done.querySelectorAll("li").forEach((li) => {
+    const deleteButton = li.querySelector(".delete");
+    deleteButton.style.display = "none";
+  });
+}
 
 inputBox.addEventListener("keydown", function (e) {
   if (e.key === "Enter") {
