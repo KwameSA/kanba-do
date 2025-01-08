@@ -1,6 +1,7 @@
 const inputBox = document.getElementById("input-box");
 const errorMessage = document.getElementById("error-message");
-const sortOptions = document.getElementById("sort-options");
+const sortOptionsDo = document.getElementById("sort-options-do");
+const sortOptionsDone = document.getElementById("sort-options-done");
 
 const containers = {
   do: document.getElementById("do-container"),
@@ -298,33 +299,35 @@ inputBox.addEventListener("keydown", function (e) {
 });
 
 containers.do.addEventListener("dblclick", function (e) {
-  if (e.target.tagName === "LI") {
-    const originalText = e.target.firstChild.textContent;
+  if (e.target.tagName === "LI" && !e.target.isEditing) {
+    e.target.isEditing = true;
+    const originalText = e.target.firstChild.textContent.trim();
+
     const input = document.createElement("input");
     input.type = "text";
-    input.value = originalText.trim();
-    e.target.firstChild.replaceWith(input);
+    input.value = originalText;
+    input.className = "edit-input";
 
-    input.addEventListener("blur", function () {
-      const updatedText = input.value.trim();
-      e.target.innerHTML = updatedText || originalText;
-
-      const span = document.createElement("span");
-      span.innerHTML = "\u00d7";
-      e.target.appendChild(span);
-
-      saveTask();
-    });
-
-    input.addEventListener("keydown", function (eKey) {
-      if (eKey.key === "Enter") {
-        const updatedText = input.value.trim();
-        e.target.innerHTML = updatedText || originalText;
-        saveTask();
-      }
-    });
+    e.target.firstChild.remove();
+    e.target.insertBefore(input, e.target.firstChild);
 
     input.focus();
+
+    const finishEdit = () => {
+      const updatedText = input.value.trim() || originalText;
+      input.remove();
+      e.target.isEditing = false;
+
+      e.target.firstChild.textContent = updatedText;
+      saveTask();
+    };
+
+    input.addEventListener("blur", finishEdit);
+    input.addEventListener("keydown", function (eKey) {
+      if (eKey.key === "Enter") {
+        finishEdit();
+      }
+    });
   }
 });
 
