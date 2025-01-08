@@ -131,7 +131,7 @@ input {
   background-color: rgb(57, 200, 152);
 }
 
-button:hover {
+.do-input button:hover {
   background-color: rgb(120, 214, 182);
 }
 
@@ -297,4 +297,14 @@ li {
   transition:
     background-color 0.2s ease,
     box-shadow 0.2s ease;
+}
+
+.do-container {
+  border: 2px dashed transparent;
+  transition: border 0.3s;
+}
+
+.do-container.drag-over {
+  border: 2px dashed #007bff;
+  background-color: #f0f8ff;
 }
