@@ -32,7 +32,7 @@
 .todo-app {
   max-width: 545px;
   background-color: rgba(204, 177, 152, 0.5);
-  margin: 100px auto;
+  margin: 50px auto;
   padding: 40px 30px 70px;
   border-radius: 20px;
   box-shadow: 10px 10px 15px rgba(0, 0, 0, 0.3);
@@ -45,7 +45,7 @@
 .todoing-app {
   max-width: 545px;
   background-color: rgba(158, 133, 110, 0.5);
-  margin: 100px auto;
+  margin: 50px auto;
   padding: 40px 30px 70px;
   border-radius: 20px;
   box-shadow: 10px 10px 15px rgba(0, 0, 0, 0.3);
@@ -58,7 +58,7 @@
 .todone-app {
   max-width: 545px;
   background-color: rgba(149, 95, 45, 0.5);
-  margin: 100px auto;
+  margin: 50px auto;
   padding: 40px 30px 70px;
   border-radius: 20px;
   box-shadow: 10px 10px 15px rgba(0, 0, 0, 0.3);
