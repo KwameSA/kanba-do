@@ -10,8 +10,9 @@ const containers = {
 
 function addEntry() {
   const congratsElement = document.getElementById("congratulations");
+
   congratsElement.style.display = "none";
-  
+
   const taskText = inputBox.value.trim();
 
   if (!taskText) {
@@ -166,8 +167,7 @@ function addEventListenerForButtons() {
 addEventListenerForButtons();
 
 function sortTasks(criteria) {
-  const tasks = Array.from(containers.do.children).concat(Array.from(containers.doing.children), Array.from(containers.done.children));
-
+  const tasks = [...Array.from(containers.do.children), ...Array.from(containers.done.children)];
   if (criteria === "alphabetical") {
     tasks.sort((a, b) => a.textContent.localeCompare(b.textContent));
   } else if (criteria === "checked") {
