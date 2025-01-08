@@ -166,8 +166,8 @@ function addEventListenerForButtons() {
 
 addEventListenerForButtons();
 
-function sortTasks(criteria) {
-  const tasks = [...Array.from(containers.do.children), ...Array.from(containers.done.children)];
+function sortTasks(criteria, section) {
+  const tasks = Array.from(containers[section].children);
   if (criteria === "alphabetical") {
     tasks.sort((a, b) => a.textContent.localeCompare(b.textContent));
   } else if (criteria === "checked") {
@@ -176,23 +176,17 @@ function sortTasks(criteria) {
     tasks.sort((a, b) => new Date(a.dataset.dateAdded) - new Date(b.dataset.dateAdded));
   }
 
-  containers.do.innerHTML = "";
-  containers.doing.innerHTML = "";
-  containers.done.innerHTML = "";
+  containers[section].innerHTML = "";
 
-  tasks.forEach((task) => {
-    if (task.dataset.status === "do") {
-      containers.do.appendChild(task);
-    } else if (task.dataset.status === "doing") {
-      containers.doing.appendChild(task);
-    } else if (task.dataset.status === "done") {
-      containers.done.appendChild(task);
-    }
-  });
+  tasks.forEach((task) => containers[section].appendChild(task));
 }
 
-sortOptions.addEventListener("change", function () {
-  sortTasks(sortOptions.value);
+sortOptionsDo.addEventListener("change", function () {
+  sortTasks(sortOptionsDo.value, "do");
+});
+
+sortOptionsDone.addEventListener("change", function () {
+  sortTasks(sortOptionsDone.value, "done");
 });
 
 containers.do.addEventListener("click", function (e) {
