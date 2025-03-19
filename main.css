@@ -205,13 +205,19 @@ ul li span:hover {
 .top-btn-container {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .top-btn-nav {
   display: flex;
   gap: 1em;
+  flex: 1;
 }
-.top-btn-nav button {
+
+.top-btn-nav button,
+.top-btn-clr button {
   border: none;
   outline: none;
   padding: 10px 20px;
@@ -219,20 +225,38 @@ ul li span:hover {
   font-size: 12px;
   font-weight: bold;
   cursor: pointer;
-  background-color: rgb(104, 121, 116);
   color: aliceblue;
 }
 
-.top-btn-clr {
-  border: none;
-  outline: none;
-  padding: 10px 20px;
-  border-radius: 10px;
-  font-size: 12px;
-  font-weight: bold;
-  cursor: pointer;
+.top-btn-nav button {
+  background-color: rgb(104, 121, 116);
+}
+
+.top-btn-clr button {
   background-color: rgb(147, 66, 90);
-  color: aliceblue;
+}
+
+.top-btn-clr {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* SEARCH STYLES */
+.search-option {
+  display: flex;
+  justify-content: center;
+  flex: 2;
+}
+
+.search-option input {
+  border-radius: 10px;
+  border: none;
+  outline: 1px solid brown;
+  width: 70%;
+  background-color: rgba(217, 211, 206, 0.5);
+  padding: 8px 12px;
+  font-size: 14px;
 }
 
 /* TOP BUTTON EFFECTS */
@@ -273,7 +297,7 @@ li {
   font-weight: bold;
   text-align: center;
   margin-bottom: 20px;
-  margin-top: 60px;
+  margin-top: 30px;
   animation: pulse 2s infinite;
 }
 
@@ -321,5 +345,79 @@ footer {
   font-size: small;
   padding: 15px 0;
   color: grey;
+  position: relative;
 }
 
+/* Modal Styling */
+.task-modal {
+  display: none;
+  position: fixed;
+  z-index: 999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background-color: whitesmoke;
+  padding: 20px;
+  border-radius: 10px;
+  width: 400px;
+  max-width: 90%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.modal-content input,
+.modal-content textarea,
+.modal-content select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid silver;
+}
+
+.modal-buttons button {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  background-color: rgb(104, 121, 116);
+  color: white;
+}
+
+.modal-buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.close-modal {
+  align-self: flex-end;
+  cursor: pointer;
+  font-size: 20px;
+}
+
+.move-btn {
+  position: absolute;
+  left: 20px;
+  top: 10px;
+  height: 30px;
+  width: 30px;
+  border-radius: 50%;
+  background-image: url(images/unchecked.png);
+  background-size: cover;
+  background-position: center;
+  cursor: pointer;
+}
+
+li.checked .move-btn {
+  background-image: url(images/checked.png);
+}
