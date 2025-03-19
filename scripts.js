@@ -2,12 +2,44 @@ const inputBox = document.getElementById("input-box");
 const errorMessage = document.getElementById("error-message");
 const sortOptionsDo = document.getElementById("sort-options-do");
 const sortOptionsDone = document.getElementById("sort-options-done");
+const searchStatus = document.getElementById("search-status");
+const taskModal = document.getElementById("taskModal");
+const closeModal = document.getElementById("closeModal");
+const saveModal = document.getElementById("saveModal");
+const cancelModal = document.getElementById("cancelModal");
+const modalTaskName = document.getElementById("modalTaskName");
+const modalTaskDescription = document.getElementById("modalTaskDescription");
+const modalTaskPriority = document.getElementById("modalTaskPriority");
+
+let currentSection = "do";
+let currentTaskElement = null;
 
 const containers = {
   do: document.getElementById("do-container"),
   doing: document.getElementById("doing-container"),
   done: document.getElementById("done-container"),
 };
+
+// The following code facilitates the moving between the sections
+document.querySelectorAll("button[data-target]").forEach((button) => {
+  button.addEventListener("click", function () {
+    const targetSection = button.dataset.target;
+
+    if (targetSection === "todo-app") {
+      currentSection = "do";
+    } else if (targetSection === "todoing-app") {
+      currentSection = "doing";
+    } else {
+      currentSection = "done";
+    }
+
+    document.querySelectorAll(".todo-app, .todoing-app, .todone-app").forEach((section) => {
+      section.style.display = "none";
+    });
+
+    document.querySelector(`.${targetSection}`).style.display = "block";
+  });
+});
 
 function addEntry() {
   const congratsElement = document.getElementById("congratulations");
@@ -74,18 +106,24 @@ function createTaskElement(text, status) {
     moveBackButton.style.display = "none";
   }
 
-  li.onclick = () => {
-    const currentStatus = li.dataset.status;
-    li.classList.toggle("checked");
+  const moveButtonDiv = document.createElement("div");
+  moveButtonDiv.classList.add("move-btn");
 
-    if (li.classList.contains("checked")) {
+  moveButtonDiv.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const currentStatus = li.dataset.status;
+
+    if (currentStatus === "do" || currentStatus === "doing") {
+      li.classList.add("checked");
       moveTaskForward(li);
     } else {
+      li.classList.remove("checked");
       moveTaskBackward(li);
     }
     saveTask();
-  };
+  });
 
+  li.appendChild(moveButtonDiv);
   return li;
 }
 
@@ -105,6 +143,9 @@ function moveTaskForward(task) {
     if (moveBackButton) {
       moveBackButton.style.display = "inline";
     }
+
+    task.classList.remove("checked");
+    task.dataset.checked = "false";
   } else if (status === "doing") {
     containers.done.appendChild(task);
     task.dataset.status = "done";
@@ -191,11 +232,7 @@ sortOptionsDone.addEventListener("change", function () {
 });
 
 containers.do.addEventListener("click", function (e) {
-  if (e.target.tagName === "LI") {
-    e.target.classList.toggle("checked");
-    e.target.dataset.checked = e.target.classList.contains("checked") ? "true" : "false";
-    saveTask();
-  } else if (e.target.tagName === "SPAN") {
+  if (e.target.tagName === "SPAN") {
     e.target.parentElement.remove();
     saveTask();
   }
@@ -221,21 +258,53 @@ function saveTask() {
       text: li.textContent.replace(/[×-]/g, "").trim(),
       checked: li.classList.contains("checked"),
       dateAdded: li.dataset.dateAdded,
+      priority: li.dataset.priority || "low",
     })),
     doing: Array.from(containers.doing.children).map((li) => ({
       text: li.textContent.replace(/[×-]/g, "").trim(),
       checked: li.classList.contains("checked"),
       dateAdded: li.dataset.dateAdded,
+      priority: li.dataset.priority || "low",
     })),
     done: Array.from(containers.done.children).map((li) => ({
       text: li.textContent.replace(/[×-]/g, "").trim(),
       checked: li.classList.contains("checked"),
       dateAdded: li.dataset.dateAdded,
+      priority: li.dataset.priority || "low",
     })),
   };
 
   localStorage.setItem("kanbaTasks", JSON.stringify(tasks));
 }
+
+// MODAL FUNCTIONALITY
+containers.do.addEventListener("dblclick", function (e) {
+  if (e.target.tagName === "LI" && !e.target.isEditing) {
+    currentTaskElement = e.target;
+    modalTaskName.value = e.target.firstChild.textContent.trim();
+    modalTaskDescription.value = "";
+    taskModal.style.display = "flex";
+  }
+});
+
+cancelModal.addEventListener("click", function () {
+  taskModal.style.display = "none";
+});
+
+saveModal.addEventListener("click", function () {
+  if (currentTaskElement) {
+    currentTaskElement.firstChild.textContent = modalTaskName.value.trim();
+
+    currentTaskElement.dataset.description = modalTaskDescription.value.trim();
+
+    currentTaskElement.dataset.priority = modalTaskPriority.value;
+
+    currentTaskElement.setAttribute("data-priority", modalTaskPriority.value);
+
+    saveTask();
+  }
+  taskModal.style.display = "none";
+});
 
 function showTask() {
   const tasks = JSON.parse(localStorage.getItem("kanbaTasks")) || { do: [], doing: [], done: [] };
@@ -247,7 +316,9 @@ function showTask() {
   tasks.do.forEach((task) => {
     const li = createTaskElement(task.text, "do");
     li.dataset.dateAdded = task.dateAdded || new Date().toISOString();
+    li.dataset.priority = task.priority || "low";
     li.dataset.checked = task.checked ? "true" : "false";
+
     if (task.checked) li.classList.add("checked");
     containers.do.appendChild(li);
   });
@@ -255,7 +326,9 @@ function showTask() {
   tasks.doing.forEach((task) => {
     const li = createTaskElement(task.text, "doing");
     li.dataset.dateAdded = task.dateAdded || new Date().toISOString();
+    li.dataset.priority = task.priority || "low";
     li.dataset.checked = task.checked ? "true" : "false";
+
     if (task.checked) li.classList.add("checked");
     containers.doing.appendChild(li);
   });
@@ -263,7 +336,9 @@ function showTask() {
   tasks.done.forEach((task) => {
     const li = createTaskElement(task.text, "done");
     li.dataset.dateAdded = task.dateAdded || new Date().toISOString();
+    li.dataset.priority = task.priority || "low";
     li.dataset.checked = task.checked ? "true" : "false";
+
     if (task.checked) li.classList.add("checked");
     containers.done.appendChild(li);
   });
@@ -295,39 +370,6 @@ function updateDeleteButtonVisibility() {
 inputBox.addEventListener("keydown", function (e) {
   if (e.key === "Enter") {
     addEntry();
-  }
-});
-
-containers.do.addEventListener("dblclick", function (e) {
-  if (e.target.tagName === "LI" && !e.target.isEditing) {
-    e.target.isEditing = true;
-    const originalText = e.target.firstChild.textContent.trim();
-
-    const input = document.createElement("input");
-    input.type = "text";
-    input.value = originalText;
-    input.className = "edit-input";
-
-    e.target.firstChild.remove();
-    e.target.insertBefore(input, e.target.firstChild);
-
-    input.focus();
-
-    const finishEdit = () => {
-      const updatedText = input.value.trim() || originalText;
-      input.remove();
-      e.target.isEditing = false;
-
-      e.target.firstChild.textContent = updatedText;
-      saveTask();
-    };
-
-    input.addEventListener("blur", finishEdit);
-    input.addEventListener("keydown", function (eKey) {
-      if (eKey.key === "Enter") {
-        finishEdit();
-      }
-    });
   }
 });
 
@@ -373,19 +415,6 @@ function getDragAfterElement(container, y) {
     { offset: Number.NEGATIVE_INFINITY }
   ).element;
 }
-
-// The following code facilitates the moving between the sections
-document.querySelectorAll("button[data-target]").forEach((button) => {
-  button.addEventListener("click", function () {
-    const targetSection = button.dataset.target;
-
-    document.querySelectorAll(".todo-app, .todoing-app, .todone-app").forEach((section) => {
-      section.style.display = "none";
-    });
-
-    document.querySelector(`.${targetSection}`).style.display = "block";
-  });
-});
 
 function clearTasks() {
   localStorage.removeItem("kanbaTasks");
@@ -457,4 +486,42 @@ function checkCompletion() {
 document.getElementById("clearTasksBtn").addEventListener("click", function () {
   clearTasks();
   document.getElementById("congratulations").style.display = "none";
+});
+
+// Search functionality
+searchStatus.addEventListener("input", function () {
+  const searchValue = searchStatus.value.toLowerCase();
+
+  let tasks;
+
+  if (currentSection === "do") {
+    tasks = containers.do.getElementsByTagName("li");
+  } else if (currentSection === "doing") {
+    tasks = containers.doing.getElementsByTagName("li");
+  } else {
+    tasks = containers.done.getElementsByTagName("li");
+  }
+
+  Array.from(tasks).forEach((task) => {
+    const taskText = task.firstChild.textContent.toLowerCase();
+    if (taskText.includes(searchValue)) {
+      task.style.display = "";
+    } else {
+      task.style.display = "none";
+    }
+  });
+});
+
+containers.do.addEventListener("click", function (e) {
+  if (e.target.classList.contains("delete") || e.target.classList.contains("move") || e.target.classList.contains("move-btn")) {
+    return;
+  }
+
+  if (e.target.tagName === "LI" || e.target.parentElement.tagName === "LI") {
+    currentTaskElement = e.target.closest("li");
+    modalTaskName.value = currentTaskElement.firstChild.textContent.trim();
+    modalTaskPriority.value = e.target.dataset.priority || "low";
+    modalTaskDescription.value = "";
+    taskModal.style.display = "flex";
+  }
 });
