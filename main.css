@@ -265,7 +265,7 @@ ul li span:hover {
   transform: translateY(-2px);
 }
 
-.top-btn-clr:hover {
+#clearTasksBtn:hover {
   background-color: rgb(173, 83, 110);
   transform: translateY(-2px);
 }
