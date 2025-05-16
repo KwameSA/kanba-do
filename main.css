@@ -216,7 +216,7 @@ input {
   height: 25px;
   width: 25px;
   border-radius: 50%;
-  background-image: url(/images/unchecked.png);
+  background-image: url(images/unchecked.png);
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -225,7 +225,7 @@ input {
 
 .task-item.checked .checkbox-icon,
 .task-item .move-btn.checked {
-  background-image: url(/images/checked.png);
+  background-image: url(images/checked.png);
 }
 
 .task-text {
@@ -480,14 +480,14 @@ footer {
   height: 30px;
   width: 30px;
   border-radius: 50%;
-  background-image: url(/images/unchecked.png);
+  background-image: url(images/unchecked.png);
   background-size: cover;
   background-position: center;
   cursor: pointer;
 }
 
 li.checked .move-btn {
-  background-image: url(/images/checked.png);
+  background-image: url(images/checked.png);
 }
 
 /* Task Information */
