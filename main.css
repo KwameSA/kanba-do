@@ -1242,14 +1242,75 @@ canvas {
 }
 
 /* Responsive Styles */
-@media (max-width: 900px) {
+@media (max-width: 768px) {
   .analytics-grid {
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   }
-}
-
-@media (max-width: 600px) {
   .analytics-grid {
     grid-template-columns: 1fr;
+  }
+  .top-btn-container {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .top-btn-nav button {
+    width: 100%;
+    font-size: 1.1rem;
+    padding: 12px;
+  }
+
+  .top-btn-clr {
+    width: 100%;
+    font-size: 1.1rem;
+    padding: 12px;
+    align-items: center;
+  }
+
+  #sidebar {
+    display: flex;
+    flex-direction: row;
+    width: 90%;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 5px;
+    overflow-x: auto;
+    height: 50px;
+    top: 800px;
+  }
+
+  #sidebar > * {
+    margin: 0 10px;
+    white-space: nowrap;
+  }
+
+
+  .container {
+    padding: 5px;
+  }
+
+  .todo-app,
+  .todoing-app,
+  .todone-app {
+    margin: 20px auto;
+    padding: 20px 15px 50px;
+    border-radius: 15px;
+  }
+
+
+  input[type="search"],
+  input[type="text"],
+  input,
+  textarea {
+    font-size: 16px;
+  }
+
+  .search-option {
+    margin-top: 10px;
+  }
+
+  button {
+    min-height: 44px;
   }
 }
