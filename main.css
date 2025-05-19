@@ -1323,4 +1323,10 @@ canvas {
   button {
     min-height: 44px;
   }
+
+    #panel-container {
+    width: 100vw;
+    left: 0;
+    padding: 0;
+  }
 }
