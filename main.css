@@ -1269,15 +1269,19 @@ canvas {
   }
 
   #sidebar {
+    position: fixed;
+    bottom: 40px;
+    top: auto; 
+    width: 90%;
+    height: 50px;
     display: flex;
     flex-direction: row;
-    width: 90%;
     justify-content: center;
     align-items: center;
     padding: 10px 5px;
     overflow-x: auto;
-    height: 50px;
-    bottom: 0; 
+    z-index: 9999;
+    background-color: white;
   }
 
   #sidebar > * {
