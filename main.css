@@ -1277,7 +1277,7 @@ canvas {
     padding: 10px 5px;
     overflow-x: auto;
     height: 50px;
-    top: 800px;
+    bottom: 0; 
   }
 
   #sidebar > * {
