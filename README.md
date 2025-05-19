@@ -24,7 +24,7 @@ Tasks can be added, moved between sections, and saved in local storage to persis
 - **HTML**: For structuring the web page.
 - **CSS**: For styling the application and making it visually appealing.
 - **JavaScript**: For dynamic functionality, including adding, moving, editing, and deleting tasks, as well as saving tasks to local storage.
-- **LocalStorage**: To save the tasks data in the browser so that tasks persist across sessions.
+- **WebStorage**: To save the tasks data in the browser so that tasks persist across sessions.
 
 ## Installation
 
@@ -50,11 +50,3 @@ Tasks can be added, moved between sections, and saved in local storage to persis
 5. Use the sort dropdown to organize tasks based on alphabetical order, checked status, or date added.
 
 6. Clear all tasks using the "Clear All Tasks" button.
-
-## Contributing
-
-Feel free to fork this repository and submit issues or pull requests if you have improvements or bug fixes.
-
-## License
-
-This project is open source and available under the MIT License.
