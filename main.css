@@ -1243,6 +1243,10 @@ canvas {
 
 /* Responsive Styles */
 @media (max-width: 768px) {
+  html, body {
+    overflow-x: hidden;
+  }
+  
   .analytics-grid {
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   }
