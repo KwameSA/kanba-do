@@ -1,4 +1,4 @@
-# Kanban Task Management App
+# Kanba-DO - Kanban Task Management App
 
 A simple, interactive task management application built using HTML, CSS, and JavaScript. This app allows users to organize their tasks in a Kanban-style interface, with draggable, editable, and deletable tasks. The app supports three sections:
 
