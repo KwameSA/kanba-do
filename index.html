@@ -1,0 +1,428 @@
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title data-i18n="Kanba-DO">Kanba-DO</title>
+    <link href="main.css" rel="stylesheet" />
+    <link href="/assets/images/favicon-32x32.png" rel="icon" sizes="32x32" type="image/png" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="top-btn-container">
+        <div class="top-btn-nav">
+          <button data-i18n="DO" data-target="todo-app">DO</button>
+          <button data-i18n="DOING" data-target="todoing-app">DOING</button>
+          <button data-i18n="DONE" data-target="todone-app">DONE</button>
+        </div>
+        <div class="search-option">
+          <input autocomplete="off" data-i18n="Search tasks..." id="search-status" placeholder="Search tasks..." spellcheck="false" type="search" />
+        </div>
+        <div class="top-btn-clr">
+          <button data-i18n="Reset" id="clearTasksBtn">RESET</button>
+        </div>
+      </div>
+      <p id="search-info">Titles of tasks whose descriptions or tags match are also included in the results.</p>
+      <div id="congratulations" style="display: none"></div>
+      <div id="tag-filter-indicator" style="display: none">
+        Showing tasks tagged <strong id="active-tag-label"></strong>
+        <button id="clear-tag-filter">✕</button>
+      </div>
+      <div id="sidebar">
+        <button class="sidebar-btn" data-i18n="Toggle Light/Dark Mode" id="dark-mode-toggle" title="Toggle Light/Dark Mode"><i class="fa-regular fa-moon" id="moon-icon"></i></button>
+        <button class="sidebar-btn" data-i18n="FAQ" id="open-faq" title="FAQ"><i class="fa-solid fa-circle-question"></i></button>
+        <button class="sidebar-btn" data-i18n="Analytics" id="open-analytics" title="Analytics"><i class="fa-solid fa-bars-progress"></i></button>
+        <button class="sidebar-btn" data-i18n="Import/Export" id="open-import-export" title="Import/Export"><i class="fa-solid fa-file-import"></i></button>
+        <button class="sidebar-btn" data-i18n="Notifications" id="notifications" title="Notifications">
+          <i class="fa-regular fa-bell"></i>
+        </button>
+        <span class="badge hidden" data-i18n="0" id="notification-count">0</span>
+        <button class="sidebar-btn" data-i18n="Languages" id="language-toggle" title="Languages"><i class="fa-solid fa-globe"></i></button>
+      </div>
+      <!-- Template Task (Hidden) -->
+      <template id="task-template">
+        <li class="task-item">
+          <div class="task-header">
+            <div class="task-content">
+              <span class="checkbox-icon"></span>
+              <span class="task-text" data-i18n="Sample Task">Sample Task</span>
+            </div>
+            <div class="task-controls">
+              <span class="priority-indicator priority-low"></span>
+              <span class="delete">×</span>
+              <span class="move" data-i18n="-">-</span>
+            </div>
+          </div>
+          <div class="task-tags">
+            <span class="tag-bubble">#school</span>
+            <span class="tag-bubble">#urgent</span>
+          </div>
+        </li>
+      </template>
+      <!-- To Do Section -->
+      <div class="do-container">
+        <div class="todo-app">
+          <div class="header">
+            <h2>Kanba-DO<img src="/images/notes.png" /></h2>
+            <div class="task-view-option">
+              <select id="task-view-options">
+                <optgroup data-i18n="Sort" label="Sort">
+                  <option data-i18n="Alphabetical" value="sort-alpha">Alphabetical</option>
+                  <option data-i18n="Date Added" value="sort-date">Date Added</option>
+                  <option data-i18n="Due Date" value="sort-due">Due Date</option>
+                  <option data-i18n="Priority" value="sort-priority">Priority</option>
+                </optgroup>
+                <optgroup data-i18n="Filter" label="Filter">
+                  <option data-i18n="All" value="filter-all">All</option>
+                  <option data-i18n="High only" value="filter-high">High only</option>
+                  <option data-i18n="Medium only" value="filter-medium">Medium only</option>
+                  <option data-i18n="Low only" value="filter-low">Low only</option>
+                  <option data-i18n="Overdue" value="filter-overdue">Overdue</option>
+                  <option data-i18n="Due Soon" value="filter-duesoon">Due Soon</option>
+                </optgroup>
+              </select>
+            </div>
+          </div>
+          <div class="do-input">
+            <input autocomplete="off" data-i18n="Enter Your Text Here" id="input-box" placeholder="Enter Your Text Here" type="text" />
+            <button data-i18n="ADD" id="add-button">ADD</button>
+          </div>
+          <div aria-live="assertive" class="error-message" data-i18n="Enter something to be accomplished!!" id="error-message">Enter something to be accomplished!!</div>
+          <ul id="do-container"></ul>
+        </div>
+      </div>
+      <!-- Doing Section -->
+      <div class="doing-container">
+        <div class="todoing-app">
+          <div class="header">
+            <h2>Kanba-DOING<img src="/images/notes.png" /></h2>
+          </div>
+          <ul id="doing-container"></ul>
+        </div>
+      </div>
+      <!-- Done Section -->
+      <div class="done-container">
+        <div class="todone-app">
+          <div class="header">
+            <h2>Kanba-DONE<img src="/images/notes.png" /></h2>
+            <div class="task-view-option">
+              <select id="task-view-options">
+                <optgroup data-i18n="Sort" label="Sort">
+                  <option data-i18n="Alphabetical" value="sort-alpha">Alphabetical</option>
+                  <option data-i18n="Date Added" value="sort-date">Date Added</option>
+                  <option data-i18n="Due Date" value="sort-due">Due Date</option>
+                  <option data-i18n="Priority" value="sort-priority">Priority</option>
+                </optgroup>
+                <optgroup data-i18n="Filter" label="Filter">
+                  <option data-i18n="All" value="filter-all">All</option>
+                  <option data-i18n="High only" value="filter-high">High only</option>
+                  <option data-i18n="Medium only" value="filter-medium">Medium only</option>
+                  <option data-i18n="Low only" value="filter-low">Low only</option>
+                  <option data-i18n="Overdue" value="filter-overdue">Overdue</option>
+                  <option data-i18n="Due Soon" value="filter-duesoon">Due Soon</option>
+                </optgroup>
+              </select>
+            </div>
+          </div>
+          <ul id="done-container"></ul>
+        </div>
+      </div>
+      <footer>Copyright © <span id="currentYear" style="padding: 0 5px"></span> KwameSA</footer>
+    </div>
+    <!-- Task Editing Modal -->
+    <div class="task-modal" id="taskModal">
+      <div class="modal-content">
+        <h3 data-i18n="Edit Task">Edit Task</h3>
+        <input data-i18n="Enter task name here..." id="modalTaskName" placeholder="Enter task name here..." type="text" />
+        <textarea data-i18n="Describe your task with short notes..." id="modalTaskDescription" placeholder="Describe your task with short notes..."></textarea>
+        <label data-i18n="Priority" for="modalTaskPriority">Priority</label>
+        <select id="modalTaskPriority">
+          <option data-i18n="Low" value="low">Low</option>
+          <option data-i18n="Medium" value="medium">Medium</option>
+          <option data-i18n="High" value="high">High</option>
+        </select>
+        <label data-i18n="Due" for="modalTaskDueDate">Due</label>
+        <input id="modalTaskDueDate" type="date" />
+        <label for="modalTaskTags">Tags (comma separated)</label>
+        <input data-i18n="e.g. school, urgent" id="modalTaskTags" placeholder="e.g. school, urgent" type="text" />
+        <div class="modal-buttons">
+          <button data-i18n="Save" id="saveModal">Save</button>
+          <button data-i18n="Cancel" id="cancelModal">Cancel</button>
+        </div>
+      </div>
+    </div>
+    <div id="panel-container">
+      <div class="panel hidden" id="analytics-panel">
+        <button class="close-panel" id="closeAllPanels">✖</button>
+        <div class="analytics-tabs">
+          <button class="tab-btn active" data-i18n="Overview" data-tab="overview">Overview</button>
+          <button class="tab-btn" data-i18n="Trends" data-tab="trends">Trends</button>
+          <button class="tab-btn" data-i18n="Tags" data-tab="tags">Tags</button>
+          <button class="tab-btn" data-i18n="Insights" data-tab="insights">Insights</button>
+          <button class="tab-btn" data-i18n="Warnings" data-tab="warnings">Warnings</button>
+        </div>
+
+        <div id="analytics-content">
+          <div class="analytics-tab" id="tab-overview">
+            <div class="chart-card">
+              <h2 data-i18n="Task Progress Snapshot">Task Progress Snapshot</h2>
+              <div class="analytics-grid">
+                <canvas class="bar-chart" id="statusChart"></canvas>
+              </div>
+              <p id="chartSummary" style="text-align: center"></p>
+            </div>
+          </div>
+
+          <div class="analytics-tab hidden" id="tab-trends">
+            <div class="chart-card">
+              <h2 data-i18n="Trend Over Time">Trend Over Time</h2>
+              <div class="analytics-grid">
+                <canvas class="line-chart" id="trendChart"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <div class="analytics-tab hidden" id="tab-tags">
+            <div class="chart-card">
+              <h2 data-i18n="Tag Usage Distribution">Tag Usage Distribution</h2>
+              <div class="analytics-grid">
+                <canvas class="pie-chart" id="tagChart"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <div class="analytics-tab hidden" id="tab-insights">
+            <div class="insights-tabs">
+              <button data-i18n="Avg Completion" data-insight="completion">Avg Completion</button>
+              <button data-i18n="Priority Trends" data-insight="priority">Priority Trends</button>
+              <button data-i18n="Completion by Tag" data-insight="tag">Completion by Tag</button>
+            </div>
+
+            <div class="chart-card insight-card completion-card">
+              <h2 data-i18n="Avg. Completion Time">Avg. Completion Time</h2>
+              <p id="average-completion-text">Loading...</p>
+              <div class="insights-content">
+                <canvas class="insights-chart avg-completion" id="completionTimeChart"></canvas>
+              </div>
+            </div>
+
+            <div class="chart-card insight-card priority-card hidden">
+              <h2 data-i18n="Priority Trends">Priority Trends</h2>
+              <div class="insights-content">
+                <canvas class="insights-chart priority-trends hidden" id="priorityTrendChart"></canvas>
+              </div>
+            </div>
+
+            <div class="chart-card insight-card tag-card hidden">
+              <h2 data-i18n="Completion by Tag">Completion by Tag</h2>
+              <div class="insights-content">
+                <canvas class="insights-chart completion-tag hidden" id="completionRateByTagChart"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <div class="analytics-tab hidden" id="tab-warnings">
+            <!-- 📌 Stagnant Tasks -->
+            <div class="chart-card">
+              <h2 data-i18n="Stagnant Tasks (3+ days)">Stagnant Tasks (3+ days)</h2>
+              <div class="warning-expandables" id="stagnant-warning-list">
+                <!-- Dynamically injected summaries + descriptions go here -->
+              </div>
+            </div>
+            <!-- 🏷️ Tag Overload Alerts -->
+            <div class="chart-card">
+              <h2 data-i18n="Tag Overload Alerts (5+ tasks)">Tag Overload Alerts (5+ tasks)</h2>
+              <div class="warning-expandables" id="overloaded-tag-list">
+                <!-- Dynamically injected tag summaries + task lists go here -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="export-tools">
+          <button data-i18n="Export to CSV" id="export-csv-btn">Export to CSV</button>
+          <button data-i18n="Export Full Report (PDF)" id="export-pdf-full">Export Full Report (PDF)</button>
+          <button data-i18n="Export Current Tab (PDF)" id="export-pdf-current">Export Current Tab (PDF)</button>
+          <button data-i18n="Download Chart (PNG)" class="download-btn" data-chart-id="completionTimeChart">Download Chart (PNG)</button>
+        </div>
+      </div>
+
+      <div class="panel hidden" id="faq-panel">
+        <button class="close-panel" id="closeAllPanels">✖</button>
+        <h2 data-i18n="Frequently Asked Questions">Frequently Asked Questions</h2>
+        <h2 data-i18n="Getting Started" style="margin-bottom: 10px">Getting Started</h2>
+        <details>
+          <summary data-i18n="What is Kanba-DO?">What is Kanba-DO?</summary>
+          <p data-i18n="faq-kanba-desc">Kanba-DO is a visual task management system based on the Kanban methodology. It helps you track your work from DO → DOING → DONE, using tags, priorities, due dates, and analytics insights.</p>
+        </details>
+        <details>
+          <summary data-i18n="How do I add and manage tasks?">How do I add and manage tasks?</summary>
+          <p data-i18n="faq-add-manage">Use the input box in the DO section to add a task. Click tasks to edit, move between stages using the arrows, and check them off when complete.</p>
+        </details>
+        <details>
+          <summary data-i18n="What does DO, DOING, and DONE mean?">What does "DO", "DOING", and "DONE" mean?</summary>
+          <p data-i18n="faq-do-meanings">"DO" is for tasks yet to begin. "DOING" is for tasks in progress, and "DONE" is for completed tasks. You can move tasks between stages using the check or arrow buttons.</p>
+        </details>
+        <details>
+          <summary data-i18n="How do I edit an existing task?">How do I edit an existing task?</summary>
+          <p data-i18n="faq-edit-task">Click on any task card to open the editing modal. From there, you can change the task name, priority, description, due date, and tags. Click "Save" to apply changes.</p>
+        </details>
+        <details>
+          <summary data-i18n="What happens when I click the checkbox icon?">What happens when I click the checkbox icon?</summary>
+          <p data-i18n="faq-checkbox-behavior">Clicking the checkbox moves the task through DO → DOING → DONE. If clicked again on a completed task, it moves back through the stages.</p>
+        </details>
+        <h2 data-i18n="Tags & Priorities" style="margin: 20px 0 10px">Tags &amp; Priorities</h2>
+        <details>
+          <summary data-i18n="What are tags used for?">What are tags used for?</summary>
+          <p data-i18n="faq-tags-purpose">Tags help categorize your tasks (e.g., #school, #urgent). You can click on a tag to filter tasks by it and focus on a particular theme or category.</p>
+        </details>
+        <details>
+          <summary data-i18n="How do I add or remove tags?">How do I add or remove tags?</summary>
+          <p data-i18n="faq-tags-how">You can add tags when creating or editing a task. Use the input field and press enter after each tag. Tags can also be deleted individually while editing.</p>
+        </details>
+        <details>
+          <summary data-i18n="How does tag filtering work?">How does tag filtering work?</summary>
+          <p data-i18n="faq-tag-filtering">Clicking a tag filters your task list to show only tasks with that tag. A filter badge appears at the top, and clicking it again clears the filter.</p>
+        </details>
+        <details>
+          <summary data-i18n="How do task priorities work?">How do task priorities work?</summary>
+          <p data-i18n="faq-priorities-explained">Tasks can be low (blue), medium (orange), or high (red) priority. You can set this when creating or editing a task to help organize urgency.</p>
+        </details>
+        <details>
+          <summary data-i18n="Why are some tasks highlighted in color?">Why are some tasks highlighted in color?</summary>
+          <p data-i18n="faq-highlight-colors">Tasks with colored borders represent priority or urgency: red for overdue, yellow for near due, and gray or blue for regular priority.</p>
+        </details>
+        <h2 data-i18n="Import & Export" style="margin: 20px 0 10px">Import &amp; Export</h2>
+        <details>
+          <summary data-i18n="How do I import tasks?">How do I import tasks?</summary>
+          <p data-i18n="faq-import-how">Go to the Import/Export panel, choose a JSON file or paste task JSON into the textarea, and click Import.</p>
+        </details>
+        <details>
+          <summary data-i18n="How do I export tasks?">How do I export tasks?</summary>
+          <p data-i18n="faq-export-how">Use the Export as JSON or Export as CSV button in the Import/Export panel to save your tasks to your device.</p>
+        </details>
+        <details>
+          <summary data-i18n="Can I undo imports?">Can I undo imports?</summary>
+          <p data-i18n="faq-undo-import">Not at the moment. It’s best to export or backup your tasks before importing new data just in case.</p>
+        </details>
+        <details>
+          <summary data-i18n="What format is used for import/export?">What format is used for import/export?</summary>
+          <p data-i18n="faq-format-used">Tasks are saved and loaded as structured JSON. CSV export is available for simple spreadsheet use.</p>
+        </details>
+        <details>
+          <summary data-i18n="Can I transfer my tasks to another device?">Can I transfer my tasks to another device?</summary>
+          <p data-i18n="faq-transfer-tasks">Yes, export your tasks as JSON and import them into Kanba-DO on another browser or device.</p>
+        </details>
+        <h2 data-i18n="Analytics & Insights" style="margin: 20px 0 10px">Analytics &amp; Insights</h2>
+        <details>
+          <summary data-i18n="What does the Analytics panel show?">What does the Analytics panel show?</summary>
+          <p data-i18n="faq-analytics-panel">The Analytics panel provides charts and stats on task progress, tag usage, productivity over time, and warnings for overdue or stagnant tasks.</p>
+        </details>
+        <details>
+          <summary data-i18n="What are Snapshots?">What are Snapshots?</summary>
+          <p data-i18n="faq-snapshots">Snapshots record your task counts by category and priority each day. They help you track performance trends over time.</p>
+        </details>
+        <details>
+          <summary data-i18n="What are Warnings?">What are Warnings?</summary>
+          <p data-i18n="faq-warnings">Warnings highlight tasks that are overdue, stuck in DOING, or have too many tags. These help you find issues before they grow.</p>
+        </details>
+        <details>
+          <summary data-i18n="Can I download Analytics as PDF?">Can I download Analytics as PDF?</summary>
+          <p data-i18n="faq-pdf-download">Yes, use the Export as PDF button in the Analytics panel to save your charts and insights. You can export the full dashboard or just one tab.</p>
+        </details>
+        <details>
+          <summary data-i18n="What is shown under Insights?">What is shown under Insights?</summary>
+          <p data-i18n="faq-insights-section">Insights break down completion times and patterns, helping you understand how fast or effectively you’re working across tasks.</p>
+        </details>
+        <h2 data-i18n="Settings & Customization" style="margin: 20px 0 10px">Settings &amp; Customization</h2>
+        <details>
+          <summary data-i18n="How do I switch languages?">How do I switch languages?</summary>
+          <p data-i18n="faq-language-switch">Use the language panel in the sidebar to select a language. Your choice is saved automatically for future visits.</p>
+        </details>
+        <details>
+          <summary data-i18n="How does dark mode work?">How does dark mode work?</summary>
+          <p data-i18n="faq-darkmode">Click the moon/sun icon in the sidebar. Your preference is saved in localStorage so it stays consistent across sessions.</p>
+        </details>
+        <details>
+          <summary data-i18n="Will my tasks stay if I reload the page?">Will my tasks stay if I reload the page?</summary>
+          <p data-i18n="faq-persist-tasks">Yes. All data is saved locally in your browser’s storage. You won’t lose tasks unless you clear your localStorage manually or use the reset option.</p>
+        </details>
+        <details>
+          <summary data-i18n="Can I reset everything?">Can I reset everything?</summary>
+          <p data-i18n="faq-reset-all">Yes. Click the reset button in the sidebar to clear all tasks, settings, and analytics data. This is useful if you want a fresh start.</p>
+        </details>
+        <details>
+          <summary data-i18n="Can I use Kanba-DO offline?">Can I use Kanba-DO offline?</summary>
+          <p data-i18n="faq-offline-use">Yes. All features work offline since Kanba-DO runs entirely in your browser. Just keep your data backed up!</p>
+        </details>
+      </div>
+
+      <div class="panel hidden" id="import-export-panel">
+        <button class="close-panel">✖</button>
+        <h2 data-i18n="Import Tasks as JSON File">Import Tasks as JSON File</h2>
+        <div class="file-input-wrapper">
+          <label class="file-upload-btn" data-i18n="Choose File" for="import-file">Choose File</label>
+          <span class="file-name-display" data-i18n="No file chosen" id="file-name">No file chosen</span>
+          <input accept=".json" hidden="" id="import-file" type="file" />
+        </div>
+        <p data-i18n="or paste task JSON manually:">or paste task JSON manually:</p>
+        <textarea data-i18n="Paste task JSON here..." id="import-textarea" placeholder="Paste task JSON here..." rows="8"></textarea>
+        <button id="import-btn"><i class="fas fa-upload"></i> <span data-i18n="Import Tasks">Import Tasks</span></button>
+        <p id="import-status" data-i18n="Import Status"></p>
+        <hr />
+        <h2 data-i18n="Export Tasks as JSON File">Export Tasks as JSON File</h2>
+        <button id="export-btn"><i class="fas fa-download"></i> <span data-i18n="Export as JSON">Export as JSON</span></button>
+      </div>
+
+      <div class="panel hidden" id="notifications-panel">
+        <button class="close-panel" id="closeAllPanels">✖</button>
+        <details open="">
+          <summary data-i18n="Tasks Overdue"><h2 data-i18n="Tasks Overdue">Tasks Overdue</h2></summary>
+          <ul id="overdue-list"></ul>
+          <p data-i18n="No overdue tasks! You're doing great!" id="no-overdue-msg">No overdue tasks! You're doing great!</p>
+        </details>
+        <details open="">
+          <summary data-i18n="Tasks Due Soon"><h2 data-i18n="Tasks Due Soon">Tasks Due Soon</h2></summary>
+          <ul id="duesoon-list"></ul>
+          <p data-i18n="No tasks due soon! All good!" id="no-duesoon-msg">No tasks due soon! All good!</p>
+        </details>
+      </div>
+
+      <div class="panel hidden" id="language-panel">
+        <button class="close-panel">✖</button>
+        <div class="language-content">
+          <h2 data-i18n="Languages">Languages</h2>
+          <div class="language-options">
+            <button class="language-button" data-i18n="ENGLISH" data-lang="en">ENGLISH</button>
+            <button class="language-button" data-i18n="ESPANOL" data-lang="es">ESPANOL</button>
+            <button class="language-button" data-i18n="FRANCAIS" data-lang="fr">FRANCAIS</button>
+            <button class="language-button" data-i18n="TWI" data-lang="ak">TWI</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal hidden" id="reset-modal">
+      <div class="modal-content">
+        <i class="fa-solid fa-triangle-exclamation fa-2x" style="color: #e74c3c"></i>
+        <h3 data-i18n="Clear All Tasks?">Clear All Tasks?</h3>
+        <p data-i18n="reset-warning-line-1">This will remove all tasks from your board.</p>
+        <p data-i18n="reset-warning-line-2">Analytics and settings will remain intact.</p>
+        <div class="modal-buttons">
+          <button class="btn-secondary" data-i18n="Cancel" id="cancel-reset">Cancel</button>
+          <button class="btn-danger" data-i18n="Yes, Clear Tasks" id="confirm-reset">Yes, Clear Tasks</button>
+        </div>
+      </div>
+    </div>
+
+    <div data-i18n="Toggle Simulated Data" id="sim-toggle" title="Toggle Simulated Data">
+      <i class="fa-solid fa-toggle-off" id="sim-toggle-icon"></i>
+    </div>
+
+    <script crossorigin="anonymous" src="https://kit.fontawesome.com/d1e470b967.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="module" src="main.js"></script>
+  </body>
+</html>
