@@ -216,7 +216,7 @@ input {
   height: 25px;
   width: 25px;
   border-radius: 50%;
-  background-image: url(/images/unchecked.png);
+  background-image: url(images/unchecked.png);
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -225,7 +225,7 @@ input {
 
 .task-item.checked .checkbox-icon,
 .task-item .move-btn.checked {
-  background-image: url(/images/checked.png);
+  background-image: url(images/checked.png);
 }
 
 .task-text {
@@ -480,14 +480,14 @@ footer {
   height: 30px;
   width: 30px;
   border-radius: 50%;
-  background-image: url(/images/unchecked.png);
+  background-image: url(images/unchecked.png);
   background-size: cover;
   background-position: center;
   cursor: pointer;
 }
 
 li.checked .move-btn {
-  background-image: url(/images/checked.png);
+  background-image: url(images/checked.png);
 }
 
 /* Task Information */
@@ -592,7 +592,7 @@ li.checked .move-btn {
   display: none;
   margin: 20px auto;
   padding: 10px 20px;
-  background-color: var(--card-bg, #f0f0f0); /* themed for light/dark */
+  background-color: var(--card-bg, #f0f0f0);
   color: var(--text-color, #333);
   border-left: 5px solid #007acc;
   border-radius: 8px;
@@ -628,7 +628,7 @@ li.checked .move-btn {
   display: none;
   margin: 20px auto;
   padding: 10px 20px;
-  background-color: var(--card-bg, #f0f0f0); /* themed for light/dark */
+  background-color: var(--card-bg, #f0f0f0);
   color: var(--text-color, #333);
   border-left: 5px solid #007acc;
   border-radius: 8px;
@@ -882,7 +882,7 @@ summary h2 {
   font-size: 14px;
   font-weight: bold;
   display: flex;
-  flex-direction: column; /* Important for stacking summary and details */
+  flex-direction: column; 
   gap: 10px;
   margin-bottom: 1em;
   border: var(--border-color) solid;
@@ -894,8 +894,8 @@ summary h2 {
   margin-top: 5px;
   border-left: 4px solid #e99;
   border-radius: 4px;
-  max-width: 90%; /* Optional */
-  margin-left: 1.5em; /* Visually connected to summary */
+  max-width: 90%; 
+  margin-left: 1.5em; 
 }
 
 .extend-btn {
@@ -1068,7 +1068,7 @@ canvas {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100%; /* Fill the panel height */
+  height: 100%; 
   text-align: center;
   gap: 30px;
 }
@@ -1244,12 +1244,12 @@ canvas {
 .language-button.active {
   background-color: #333;
   color: #fff;
-  border: 2px solid var(--primary-color); /* or something visible */
+  border: 2px solid var(--primary-color);
 }
 
 .modal-content h3,
 .modal-content p {
-  color: black; /* or #333 if using light mode */
+  color: black;
   opacity: 1;
 }
 
@@ -1268,7 +1268,7 @@ canvas {
   .analytics-grid {
     grid-template-columns: 1fr;
   }
-  /* Stack buttons vertically */
+
   .top-btn-container {
     flex-direction: column;
     align-items: stretch;
@@ -1288,7 +1288,6 @@ canvas {
     align-items: center;
   }
 
-  /* Make sidebar horizontal instead of vertical */
   #sidebar {
     position: fixed;
     bottom: 40px;
@@ -1309,34 +1308,23 @@ canvas {
     white-space: nowrap;
   }
 
-  /* Adjust container padding */
+
   .container {
     padding: 5px;
   }
-
-  /* Adjust todo sections */
-  /* .todo-app,
-  .todoing-app,
-  .todone-app {
-    margin: 20px auto;
-    padding: 20px 15px 50px;
-    border-radius: 15px;
-  } */
 
   /* Input fields – avoid zoom on mobile */
   input[type="search"],
   input[type="text"],
   input,
   textarea {
-    font-size: 16px; /* Prevent iOS zoom */
+    font-size: 16px;
   }
 
-  /* Optional: tighter spacing on small screens */
   .search-option {
     margin-top: 10px;
   }
 
-  /* Optional: improve touch targets */
   button {
     min-height: 44px;
   }
