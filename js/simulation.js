@@ -202,8 +202,8 @@ export function initSimulationToggle() {
       simulateTagCompletionData();
 
       localStorage.setItem("kanbaSimulated", "true");
-      simIcon.classList.remove("fa-toggle-off");
-      simIcon.classList.add("fa-toggle-on");
+      elements.simIcon.classList.remove("fa-toggle-off");
+      elements.simIcon.classList.add("fa-toggle-on");
 
       showTask();
       renderWarnings();
