@@ -1,33 +1,61 @@
-# Kanba-DO - Kanban Task Management App
+# Kanba-DO – Kanban Task Management App
 
-A simple, interactive task management application built using HTML, CSS, and JavaScript. This app allows users to organize their tasks in a Kanban-style interface, with draggable, editable, and deletable tasks. The app supports three sections:
+**Kanba-DO** is an intuitive task management app designed with a clean Kanban-style interface. Built using HTML, CSS, and JavaScript (with Flask integration in progress), it helps users organize tasks across **To Do**, **Doing**, and **Done** columns — now with analytics, multilingual support, and a dynamic sidebar.
 
-- **To Do**
-- **Doing**
-- **Done**
+---
 
-Tasks can be added, moved between sections, and saved in local storage to persist across sessions.
+## 🚀 Features
 
-## Features
+### 🧩 Core Functionality
+- **Add Tasks**: Create tasks directly in the "To Do" column.
+- **Drag & Drop**: Rearrange tasks between columns with ease.
+- **Click-to-Move**: Click a task to auto-advance its status.
+- **Edit Tasks**: Double-click a task to edit its contents.
+- **Delete Tasks**: Use the delete icon (×) to remove tasks.
+- **Persistent Storage**: Tasks are saved using `localStorage` to retain data across sessions.
 
-- **Add Tasks**: Users can input new tasks into the "To Do" section.
-- **Move Tasks**: Tasks can be moved between "To Do," "Doing," and "Done" using drag-and-drop functionality or by clicking on the task to change its status.
-- **Delete Tasks**: Tasks can be deleted by clicking the delete icon (`×`).
-- **Mark Tasks as Done**: Click on a task to mark it as completed and move it to the "Done" section.
-- **Task Editing**: Double-click on any task to edit its text.
-- **Sort Tasks**: Sort tasks by alphabetical order, check status, or by the date added.
-- **Persistent Storage**: All tasks are saved in the browser’s local storage to persist between page reloads.
-- **Clear All Tasks**: Clear all tasks from the app and local storage.
+### 📊 Productivity Insights
+- **Task Analytics**: View task distribution trends across DO, DOING, and DONE using a line chart.
+- **Progress Tracking**: Identify bottlenecks or spikes in productivity based on task flow.
 
-## Technologies Used
+### 🛎️ Notifications
+- **Overdue Alerts**: View overdue tasks via a dedicated sidebar notification panel.
+- **Smart Badge**: Sidebar icon displays real-time count of overdue items.
 
-- **HTML**: For structuring the web page.
-- **CSS**: For styling the application and making it visually appealing.
-- **JavaScript**: For dynamic functionality, including adding, moving, editing, and deleting tasks, as well as saving tasks to local storage.
-- **WebStorage**: To save the tasks data in the browser so that tasks persist across sessions.
+### 🌐 Multilingual Interface
+- **Language Toggle**: Switch between English, Spanish, French, and Akan (Twi).
+- **Dynamic UI**: All interface text is dynamically translated via `data-i18n` bindings.
 
+### 🌙 UI Enhancements
+- **Dark Mode Toggle**: Switch between light and dark themes.
+- **Modular JS**: Clean, maintainable JavaScript modules for each feature.
+- **Sidebar Navigation**: Access FAQ, language settings, insights, and notifications from a sleek sidebar.
 
-## Usage
-Open the application in your browser - https://kwamesa.github.io/kanba-do/.
+### 🧹 Other Utilities
+- **Sort Tasks**: Alphabetically, by status, or by date added.
+- **Clear All**: One-click wipe of all tasks and local storage data.
+- **FAQs**: Built-in guide for using the app effectively.
 
-You can learn more about how to use it through the FAQ section.
+---
+
+## 🛠️ Technologies Used
+
+- **HTML, CSS, JavaScript** – Core app development
+- **Web Storage API** – Local data persistence
+- **Chart.js** – Interactive line chart for task insights
+- **i18next** – Internationalization and language management
+- **Font Awesome** – Icons for sidebar and task actions
+- **Flask (In Progress)** – For future server-side features (e.g., document viewer)
+
+---
+
+## 🔗 Live App
+
+Try it here:  
+**[Kanba-DO on GitHub Pages](https://kwamesa.github.io/kanba-do/)**
+
+---
+
+## 📘 Learn More
+
+Explore tips and answers in the in-app **FAQ section**, accessible from the sidebar.
