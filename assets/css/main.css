@@ -30,7 +30,7 @@
 
 @font-face {
   font-family: "Inter";
-  src: url("assets/fonts/static/Inter-Regular.ttf") format("truetype");
+  src: url("../fonts/static/Inter-Regular.ttf") format("truetype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -38,7 +38,7 @@
 
 @font-face {
   font-family: "Inter";
-  src: url("assets/fonts/static/Inter-SemiBold.ttf") format("truetype");
+  src: url("../fonts/static/Inter-SemiBold.ttf") format("truetype");
   font-weight: 600;
   font-style: normal;
   font-display: swap;
@@ -46,7 +46,7 @@
 
 @font-face {
   font-family: "Inter";
-  src: url("assets/fonts/static/Inter-Bold.ttf") format("truetype");
+  src: url("../fonts/static/Inter-Bold.ttf") format("truetype");
   font-weight: 700;
   font-style: normal;
   font-display: swap;
@@ -260,7 +260,7 @@ input[placeholder] {
   height: 25px;
   width: 25px;
   border-radius: 50%;
-  background-image: url(images/unchecked.png);
+  background-image: url("../../images/unchecked.png");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -269,7 +269,7 @@ input[placeholder] {
 
 .task-item.checked .checkbox-icon,
 .task-item .move-btn.checked {
-  background-image: url(images/checked.png);
+  background-image: url("../../images/checked.png");
 }
 
 .task-text {
@@ -518,14 +518,14 @@ footer {
   height: 30px;
   width: 30px;
   border-radius: 50%;
-  background-image: url(images/unchecked.png);
+  background-image: url("../../images/unchecked.png");
   background-size: cover;
   background-position: center;
   cursor: pointer;
 }
 
 li.checked .move-btn {
-  background-image: url(images/checked.png);
+  background-image: url("../../images/checked.png");
 }
 
 /* Task Information */
