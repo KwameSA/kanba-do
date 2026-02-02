@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Kanba-DO | Analytics</title>
+    <script>
+      try {
+        const lang = localStorage.getItem("kanbaLang");
+        if (lang) {
+          document.documentElement.setAttribute("data-lang", lang);
+        }
+        document.documentElement.classList.add("i18n-loading");
+        if (localStorage.getItem("darkMode") === "enabled") {
+          document.documentElement.classList.add("dark");
+        }
+      } catch {}
+    </script>
+    <link href="../assets/css/main.css" rel="stylesheet" />
+    <link href="../assets/images/favicon-32x32.png" rel="icon" sizes="32x32" type="image/png" />
+  </head>
+  <body>
+    <header class="main-nav">
+      <div class="nav-brand"><a href="../index.html">Kanba-DO</a></div>
+      <nav class="nav-links">
+        <a data-i18n="Board" href="../index.html">Board</a>
+        <a data-i18n="Settings" href="settings.html">Settings</a>
+        <a class="active" data-i18n="Analytics" href="analytics.html">Analytics</a>
+        <a data-i18n="Data" href="import-export.html">Data</a>
+        <a data-i18n="Notifications" href="notifications.html">Notifications</a>
+        <a data-i18n="Help" href="faqs.html">Help</a>
+      </nav>
+    </header>
+
+    <main class="page">
+      <h1 data-i18n="Analytics">Analytics</h1>
+
+      <div id="analytics-content">
+        <section class="analytics-section">
+          <h2 data-i18n="Overview">Overview</h2>
+          <div class="insight-cards">
+            <div class="insight-card">
+              <p class="insight-label" data-i18n="Total Tasks">Total Tasks</p>
+              <p class="insight-value" id="insight-total">0</p>
+              <p class="insight-sub" data-i18n="Across DO, DOING, DONE" id="insight-total-sub">Across DO, DOING, DONE</p>
+            </div>
+            <div class="insight-card">
+              <p class="insight-label" data-i18n="Overdue Tasks">Overdue Tasks</p>
+              <p class="insight-value" id="insight-overdue">0</p>
+              <p class="insight-sub" data-i18n="Need attention first" id="insight-overdue-sub">Need attention first</p>
+            </div>
+            <div class="insight-card">
+              <p class="insight-label" data-i18n="Avg. Completion Time">Avg. Completion Time</p>
+              <p class="insight-value" id="insight-avg">N/A</p>
+              <p class="insight-sub" data-i18n="Based on finished tasks" id="insight-avg-sub">Based on finished tasks</p>
+            </div>
+            <div class="insight-card">
+              <p class="insight-label" data-i18n="Top Tag">Top Tag</p>
+              <p class="insight-value" id="insight-top-tag">None</p>
+              <p class="insight-sub" data-i18n="Most used tag" id="insight-top-tag-sub">Most used tag</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="analytics-section">
+          <div class="chart-card">
+            <h2 data-i18n="Task Progress Snapshot">Task Progress Snapshot</h2>
+            <p class="section-help" data-i18n="Progress Snapshot Help">A quick view of where tasks sit right now.</p>
+            <div class="analytics-grid">
+              <canvas class="bar-chart" id="statusChart"></canvas>
+            </div>
+            <p id="chartSummary" style="text-align: center"></p>
+          </div>
+        </section>
+
+        <section class="analytics-section">
+          <div class="chart-card">
+            <h2 data-i18n="Trend Over Time">Trend Over Time</h2>
+            <p class="section-help" data-i18n="Trend Help">Shows how your board changes each day.</p>
+            <div class="analytics-grid">
+              <canvas class="line-chart" id="trendChart"></canvas>
+            </div>
+          </div>
+        </section>
+
+        <section class="analytics-section">
+          <div class="chart-card">
+            <h2 data-i18n="Tag Usage Distribution">Tag Usage Distribution</h2>
+            <p class="section-help" data-i18n="Tag Usage Help">Helps you see what themes you focus on most.</p>
+            <div class="analytics-grid">
+              <canvas class="pie-chart" id="tagChart"></canvas>
+            </div>
+          </div>
+        </section>
+
+        <section class="analytics-section">
+          <div class="chart-card">
+            <h2 data-i18n="Avg. Completion Time">Avg. Completion Time</h2>
+            <p id="average-completion-text">Loading...</p>
+            <div class="insights-content">
+              <canvas class="insights-chart avg-completion" id="completionTimeChart"></canvas>
+            </div>
+          </div>
+        </section>
+
+        <section class="analytics-section">
+          <div class="chart-card">
+            <h2 data-i18n="Priority Trends">Priority Trends</h2>
+            <p class="section-help" data-i18n="Priority Trends Help">Shows whether high-priority work is growing.</p>
+            <div class="insights-content">
+              <canvas class="insights-chart priority-trends" id="priorityTrendChart"></canvas>
+            </div>
+          </div>
+        </section>
+
+        <section class="analytics-section">
+          <div class="chart-card">
+            <h2 data-i18n="Completion by Tag">Completion by Tag</h2>
+            <p class="section-help" data-i18n="Completion by Tag Help">Average completion time for each tag.</p>
+            <div class="insights-content">
+              <canvas class="insights-chart completion-tag" id="completionRateByTagChart"></canvas>
+            </div>
+          </div>
+        </section>
+
+        <section class="analytics-section">
+          <div class="chart-card">
+            <h2 data-i18n="Stagnant Tasks (3+ days)">Stagnant Tasks (3+ days)</h2>
+            <div class="warning-expandables" id="stagnant-warning-list"></div>
+          </div>
+          <div class="chart-card">
+            <h2 data-i18n="Tag Overload Alerts (5+ tasks)">Tag Overload Alerts (5+ tasks)</h2>
+            <div class="warning-expandables" id="overloaded-tag-list"></div>
+          </div>
+        </section>
+      </div>
+
+      <div id="export-tools">
+        <button data-i18n="Export to CSV" id="export-csv-btn">Export to CSV</button>
+        <button data-i18n="Export Full Report (PDF)" id="export-pdf-full">Export Full Report (PDF)</button>
+        <button data-i18n="Export Current Tab (PDF)" id="export-pdf-current">Export Current Tab (PDF)</button>
+        <button class="download-btn" data-chart-id="completionTimeChart" data-i18n="Download Chart (PNG)">Download Chart (PNG)</button>
+      </div>
+    </main>
+
+    <script crossorigin="anonymous" src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="module" src="../js/analytics-page.js"></script>
+  </body>
+</html>

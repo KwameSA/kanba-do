@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Kanba-DO | Data</title>
+    <script>
+      try {
+        const lang = localStorage.getItem("kanbaLang");
+        if (lang) {
+          document.documentElement.setAttribute("data-lang", lang);
+        }
+        document.documentElement.classList.add("i18n-loading");
+        if (localStorage.getItem("darkMode") === "enabled") {
+          document.documentElement.classList.add("dark");
+        }
+      } catch {}
+    </script>
+    <link href="../assets/css/main.css" rel="stylesheet" />
+    <link href="../assets/images/favicon-32x32.png" rel="icon" sizes="32x32" type="image/png" />
+  </head>
+  <body>
+    <header class="main-nav">
+      <div class="nav-brand"><a href="../index.html">Kanba-DO</a></div>
+      <nav class="nav-links">
+        <a data-i18n="Board" href="../index.html">Board</a>
+        <a data-i18n="Settings" href="settings.html">Settings</a>
+        <a data-i18n="Analytics" href="analytics.html">Analytics</a>
+        <a class="active" data-i18n="Data" href="import-export.html">Data</a>
+        <a data-i18n="Notifications" href="notifications.html">Notifications</a>
+        <a data-i18n="Help" href="faqs.html">Help</a>
+      </nav>
+    </header>
+
+    <main class="page">
+      <h1 data-i18n="Import & Export">Import &amp; Export</h1>
+
+      <div id="import-export-panel" class="page-card">
+        <h2 data-i18n="Import Tasks as JSON File">Import Tasks as JSON File</h2>
+        <div class="file-input-wrapper">
+          <label class="file-upload-btn" data-i18n="Choose File" for="import-file">Choose File</label>
+          <span class="file-name-display" data-i18n="No file chosen" id="file-name">No file chosen</span>
+          <input accept=".json" hidden="" id="import-file" type="file" />
+        </div>
+        <p data-i18n="or paste task JSON manually:">or paste task JSON manually:</p>
+        <textarea data-i18n="Paste task JSON here..." id="import-textarea" placeholder="Paste task JSON here..." rows="8"></textarea>
+        <button id="import-btn"><span data-i18n="Import Tasks">Import Tasks</span></button>
+        <p id="import-status" data-i18n="Import Status"></p>
+        <hr />
+        <h2 data-i18n="Export Tasks as JSON File">Export Tasks as JSON File</h2>
+        <button id="export-btn"><span data-i18n="Export as JSON">Export as JSON</span></button>
+      </div>
+    </main>
+
+    <script type="module" src="../js/data-page.js"></script>
+  </body>
+</html>

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Kanba-DO | Help</title>
+    <script>
+      try {
+        const lang = localStorage.getItem("kanbaLang");
+        if (lang) {
+          document.documentElement.setAttribute("data-lang", lang);
+        }
+        document.documentElement.classList.add("i18n-loading");
+        if (localStorage.getItem("darkMode") === "enabled") {
+          document.documentElement.classList.add("dark");
+        }
+      } catch {}
+    </script>
+    <link href="../assets/css/main.css" rel="stylesheet" />
+    <link href="../assets/images/favicon-32x32.png" rel="icon" sizes="32x32" type="image/png" />
+  </head>
+  <body>
+    <header class="main-nav">
+      <div class="nav-brand"><a href="../index.html">Kanba-DO</a></div>
+      <nav class="nav-links">
+        <a data-i18n="Board" href="../index.html">Board</a>
+        <a data-i18n="Settings" href="settings.html">Settings</a>
+        <a data-i18n="Analytics" href="analytics.html">Analytics</a>
+        <a data-i18n="Data" href="import-export.html">Data</a>
+        <a data-i18n="Notifications" href="notifications.html">Notifications</a>
+        <a class="active" data-i18n="Help" href="faqs.html">Help</a>
+      </nav>
+    </header>
+
+    <main class="page">
+      <h1 data-i18n="Frequently Asked Questions">Frequently Asked Questions</h1>
+
+      <section class="page-card">
+        <h2 data-i18n="Getting Started" style="margin-bottom: 10px">Getting Started</h2>
+        <details>
+          <summary data-i18n="What is Kanba-DO?">What is Kanba-DO?</summary>
+          <p data-i18n="faq-kanba-desc">Kanba-DO is a visual task management system based on the Kanban methodology. It helps you track your work from DO ƒ+' DOING ƒ+' DONE, using tags, priorities, due dates, and analytics insights.</p>
+        </details>
+        <details>
+          <summary data-i18n="How do I add and manage tasks?">How do I add and manage tasks?</summary>
+          <p data-i18n="faq-add-manage">Use the input box in the DO section to add a task. Click tasks to edit, move between stages using the arrows, and check them off when complete.</p>
+        </details>
+        <details>
+          <summary data-i18n="What does DO, DOING, and DONE mean?">What does "DO", "DOING", and "DONE" mean?</summary>
+          <p data-i18n="faq-do-meanings">"DO" is for tasks yet to begin. "DOING" is for tasks in progress, and "DONE" is for completed tasks. You can move tasks between stages using the check or arrow buttons.</p>
+        </details>
+        <details>
+          <summary data-i18n="How do I edit an existing task?">How do I edit an existing task?</summary>
+          <p data-i18n="faq-edit-task">Click on any task card to open the editing modal. From there, you can change the task name, priority, description, due date, and tags. Click "Save" to apply changes.</p>
+        </details>
+        <details>
+          <summary data-i18n="What happens when I click the checkbox icon?">What happens when I click the checkbox icon?</summary>
+          <p data-i18n="faq-checkbox-behavior">Clicking the checkbox moves the task through DO ƒ+' DOING ƒ+' DONE. If clicked again on a completed task, it moves back through the stages.</p>
+        </details>
+      </section>
+
+      <section class="page-card">
+        <h2 data-i18n="Tags & Priorities" style="margin: 20px 0 10px">Tags &amp; Priorities</h2>
+        <details>
+          <summary data-i18n="What are tags used for?">What are tags used for?</summary>
+          <p data-i18n="faq-tags-purpose">Tags help categorize your tasks (e.g., #school, #urgent). You can click on a tag to filter tasks by it and focus on a particular theme or category.</p>
+        </details>
+        <details>
+          <summary data-i18n="How do I add or remove tags?">How do I add or remove tags?</summary>
+          <p data-i18n="faq-tags-how">You can add tags when creating or editing a task. Use the input field and press enter after each tag. Tags can also be deleted individually while editing.</p>
+        </details>
+        <details>
+          <summary data-i18n="How does tag filtering work?">How does tag filtering work?</summary>
+          <p data-i18n="faq-tag-filtering">Clicking a tag filters your task list to show only tasks with that tag. A filter badge appears at the top, and clicking it again clears the filter.</p>
+        </details>
+        <details>
+          <summary data-i18n="How do task priorities work?">How do task priorities work?</summary>
+          <p data-i18n="faq-priorities-explained">Tasks can be low (blue), medium (orange), or high (red) priority. You can set this when creating or editing a task to help organize urgency.</p>
+        </details>
+        <details>
+          <summary data-i18n="Why are some tasks highlighted in color?">Why are some tasks highlighted in color?</summary>
+          <p data-i18n="faq-highlight-colors">Tasks with colored borders represent priority or urgency: red for overdue, yellow for near due, and gray or blue for regular priority.</p>
+        </details>
+      </section>
+
+      <section class="page-card">
+        <h2 data-i18n="Import & Export" style="margin: 20px 0 10px">Import &amp; Export</h2>
+      <details>
+        <summary data-i18n="How do I import tasks?">How do I import tasks?</summary>
+        <p data-i18n="faq-import-how">Go to the Import/Export panel, choose a JSON file or paste task JSON into the textarea, and click Import.</p>
+        <p data-i18n="faq-import-example-title">Example JSON format:</p>
+        <pre class="code-block">[
+  {
+    "text": "Finish math assignment",
+    "description": "Chapter 3, questions 1-10",
+    "priority": "high",
+    "duedate": "2025-10-12",
+    "checked": false,
+    "dateAdded": "2025-10-08T10:00:00.000Z",
+    "status": "do",
+    "tags": "school,urgent"
+  }
+]</pre>
+      </details>
+        <details>
+          <summary data-i18n="How do I export tasks?">How do I export tasks?</summary>
+          <p data-i18n="faq-export-how">Use the Export as JSON or Export as CSV button in the Import/Export panel to save your tasks to your device.</p>
+        </details>
+        <details>
+          <summary data-i18n="Can I undo imports?">Can I undo imports?</summary>
+          <p data-i18n="faq-undo-import">Not at the moment. Itƒ?Ts best to export or backup your tasks before importing new data just in case.</p>
+        </details>
+        <details>
+          <summary data-i18n="What format is used for import/export?">What format is used for import/export?</summary>
+          <p data-i18n="faq-format-used">Tasks are saved and loaded as structured JSON. CSV export is available for simple spreadsheet use.</p>
+        </details>
+        <details>
+          <summary data-i18n="Can I transfer my tasks to another device?">Can I transfer my tasks to another device?</summary>
+          <p data-i18n="faq-transfer-tasks">Yes, export your tasks as JSON and import them into Kanba-DO on another browser or device.</p>
+        </details>
+      </section>
+
+      <section class="page-card">
+        <h2 data-i18n="Analytics & Insights" style="margin: 20px 0 10px">Analytics &amp; Insights</h2>
+        <details>
+          <summary data-i18n="What does the Analytics panel show?">What does the Analytics panel show?</summary>
+          <p data-i18n="faq-analytics-panel">The Analytics panel provides charts and stats on task progress, tag usage, productivity over time, and warnings for overdue or stagnant tasks.</p>
+        </details>
+        <details>
+          <summary data-i18n="What are Snapshots?">What are Snapshots?</summary>
+          <p data-i18n="faq-snapshots">Snapshots record your task counts by category and priority each day. They help you track performance trends over time.</p>
+        </details>
+        <details>
+          <summary data-i18n="What are Warnings?">What are Warnings?</summary>
+          <p data-i18n="faq-warnings">Warnings highlight tasks that are overdue, stuck in DOING, or have too many tags. These help you find issues before they grow.</p>
+        </details>
+        <details>
+          <summary data-i18n="Can I download Analytics as PDF?">Can I download Analytics as PDF?</summary>
+          <p data-i18n="faq-pdf-download">Yes, use the Export as PDF button in the Analytics panel to save your charts and insights. You can export the full dashboard or just one tab.</p>
+        </details>
+        <details>
+          <summary data-i18n="What is shown under Insights?">What is shown under Insights?</summary>
+          <p data-i18n="faq-insights-section">Insights break down completion times and patterns, helping you understand how fast or effectively youƒ?Tre working across tasks.</p>
+        </details>
+      </section>
+
+      <section class="page-card">
+        <h2 data-i18n="Settings & Customization" style="margin: 20px 0 10px">Settings &amp; Customization</h2>
+        <details>
+          <summary data-i18n="How do I switch languages?">How do I switch languages?</summary>
+          <p data-i18n="faq-language-switch">Use the Settings page to select a language. Your choice is saved automatically for future visits.</p>
+        </details>
+        <details>
+          <summary data-i18n="How does dark mode work?">How does dark mode work?</summary>
+          <p data-i18n="faq-darkmode">Toggle dark mode from the Settings page. Your preference is saved in localStorage so it stays consistent across sessions.</p>
+        </details>
+        <details>
+          <summary data-i18n="Will my tasks stay if I reload the page?">Will my tasks stay if I reload the page?</summary>
+          <p data-i18n="faq-persist-tasks">Yes. All data is saved locally in your browserƒ?Ts storage. You wonƒ?Tt lose tasks unless you clear your localStorage manually or use the reset option.</p>
+        </details>
+        <details>
+          <summary data-i18n="Can I reset everything?">Can I reset everything?</summary>
+          <p data-i18n="faq-reset-all">Yes. Click the Reset button on the Board page to clear all tasks. This is useful if you want a fresh start.</p>
+        </details>
+        <details>
+          <summary data-i18n="Can I use Kanba-DO offline?">Can I use Kanba-DO offline?</summary>
+          <p data-i18n="faq-offline-use">Yes. All features work offline since Kanba-DO runs entirely in your browser. Just keep your data backed up!</p>
+        </details>
+      </section>
+    </main>
+
+    <script type="module" src="../js/help-page.js"></script>
+  </body>
+</html>

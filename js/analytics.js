@@ -1,5 +1,12 @@
 import { stringToColor } from "./utils.js";
 import { extendDueDate } from "./tasks.js";
+import { translations } from "./dictionary.js";
+
+function getChartTheme() {
+  const textColor = getComputedStyle(document.body).getPropertyValue("--text-color").trim() || "#fff";
+  const gridColor = getComputedStyle(document.body).getPropertyValue("--border-color").trim() || "rgba(255,255,255,0.2)";
+  return { textColor, gridColor };
+}
 
 function renderAnalyticsChart() {
   const tasks = JSON.parse(localStorage.getItem("kanbaTasks")) || [];
@@ -14,6 +21,8 @@ function renderAnalyticsChart() {
   if (window.statusChart instanceof Chart) {
     window.statusChart.destroy();
   }
+
+  const { textColor, gridColor } = getChartTheme();
 
   window.statusChart = new Chart(ctx, {
     type: "bar",
@@ -30,13 +39,16 @@ function renderAnalyticsChart() {
     options: {
       responsive: true,
       plugins: {
-        legend: { display: false },
+        legend: { display: false, labels: { color: textColor } },
       },
       scales: {
         y: {
           beginAtZero: true,
-          title: { display: true, text: "Task Count" },
+          title: { display: true, text: "Task Count", color: textColor },
+          ticks: { color: textColor },
+          grid: { color: gridColor },
         },
+        x: { ticks: { color: textColor }, grid: { color: gridColor } },
       },
     },
   });
@@ -52,6 +64,8 @@ function renderTrendChart() {
   const doData = trends.map((t) => t.do);
   const doingData = trends.map((t) => t.doing);
   const doneData = trends.map((t) => t.done);
+
+  const { textColor, gridColor } = getChartTheme();
 
   if (window.trendChart instanceof Chart) {
     window.trendChart.destroy();
@@ -90,6 +104,7 @@ function renderTrendChart() {
         },
         legend: {
           position: "top",
+          labels: { color: textColor },
         },
       },
       scales: {
@@ -98,8 +113,12 @@ function renderTrendChart() {
           title: {
             display: true,
             text: "Number of Tasks",
+            color: textColor,
           },
+          ticks: { color: textColor },
+          grid: { color: gridColor },
         },
+        x: { ticks: { color: textColor }, grid: { color: gridColor } },
       },
     },
   });
@@ -127,6 +146,8 @@ function renderTagChart() {
   const labels = Object.keys(tagCounts);
   const data = Object.values(tagCounts);
 
+  const { textColor } = getChartTheme();
+
   if (window.tagChart instanceof Chart) {
     window.tagChart.destroy();
   }
@@ -148,6 +169,7 @@ function renderTagChart() {
       plugins: {
         legend: {
           position: "right",
+          labels: { color: textColor },
         },
       },
     },
@@ -192,6 +214,8 @@ function renderCompletionChart() {
 
   const ctx = document.getElementById("completionTimeChart").getContext("2d");
 
+  const { textColor, gridColor } = getChartTheme();
+
   if (window.completionTimeChart instanceof Chart) {
     window.completionTimeChart.destroy();
   }
@@ -213,19 +237,29 @@ function renderCompletionChart() {
     },
     options: {
       responsive: true,
+      plugins: {
+        legend: { labels: { color: textColor } },
+        tooltip: { titleColor: textColor, bodyColor: textColor },
+      },
       scales: {
         y: {
           beginAtZero: true,
           title: {
             display: true,
             text: "Days",
+            color: textColor,
           },
+          ticks: { color: textColor },
+          grid: { color: gridColor },
         },
         x: {
           title: {
             display: true,
             text: "Completion Date",
+            color: textColor,
           },
+          ticks: { color: textColor },
+          grid: { color: gridColor },
         },
       },
     },
@@ -233,12 +267,14 @@ function renderCompletionChart() {
 }
 
 function renderWarnings() {
+  const lang = localStorage.getItem("kanbaLang") || "en";
+  const t = (key, fallback = key) => translations?.[lang]?.[key] || fallback;
   const tasks = JSON.parse(localStorage.getItem("kanbaTasks")) || [];
   const today = new Date();
 
-  const stagnantTasks = tasks.filter((t) => {
-    if (t.status === "done") return false;
-    const added = new Date(t.dateAdded);
+  const stagnantTasks = tasks.filter((task) => {
+    if (task.status === "done") return false;
+    const added = new Date(task.dateAdded);
     const age = (today - added) / (1000 * 60 * 60 * 24);
     return age > 3;
   });
@@ -246,15 +282,15 @@ function renderWarnings() {
   const tagCounts = {};
   const tagTasksMap = {};
 
-  tasks.forEach((t) => {
-    (t.tags || "")
+  tasks.forEach((task) => {
+    (task.tags || "")
       .split(",")
       .map((tag) => tag.trim())
       .forEach((tag) => {
         if (!tag) return;
         tagCounts[tag] = (tagCounts[tag] || 0) + 1;
         tagTasksMap[tag] = tagTasksMap[tag] || [];
-        tagTasksMap[tag].push(t);
+        tagTasksMap[tag].push(task);
       });
   });
 
@@ -262,38 +298,36 @@ function renderWarnings() {
     .filter(([_, count]) => count >= 5)
     .map(([tag]) => tag);
 
-  // 📌 STAGNANT TASKS HTML
   const stagnantHTML = stagnantTasks.length
     ? stagnantTasks
         .map(
-          (t) => `
+          (task) => `
       <div class="warning-item">
-        <div class="warning-item-summary" data-id="${t.id}">
-          <span class="warning-icon">🔺</span> ${t.text} — stuck in ${t.status}
+        <div class="warning-item-summary" data-id="${task.id}">
+          <span class="warning-icon">!</span> ${task.text} - ${t("stuck in", "stuck in")} ${task.status}
         </div>
         <div class="warning-details hidden">
-          ${t.description || "No description provided."}
+          ${task.description || t("No description provided.", "No description provided.")}
           <br><br>
-          <button class="extend-btn" data-text="${t.text}">Extend by 3 days</button>
+          <button class="extend-btn" data-text="${task.text}">${t("Extend by 3 days", "Extend by 3 days")}</button>
         </div>
       </div>
     `
         )
         .join("")
-    : `<p class="warning-item clear"><span class="warning-icon">✅</span> No stagnant tasks found!</p>`;
+    : `<p class="warning-item clear"><span class="warning-icon">OK</span> ${t("No stagnant tasks found!", "No stagnant tasks found!")}</p>`;
 
   document.getElementById("stagnant-warning-list").innerHTML = stagnantHTML;
 
-  // 🏷️ TAG OVERLOAD HTML
   const tagHTML = overloadedTags.length
     ? overloadedTags
         .map((tag) => {
           const relatedTasks = tagTasksMap[tag]
             .map(
-              (t) => `
+              (task) => `
               <div class="nested-task">
-                <span class="nested-task-summary">${t.text}</span>
-                <div class="warning-details hidden">${t.description || "No description provided."}</div>
+                <span class="nested-task-summary">${task.text}</span>
+                <div class="warning-details hidden">${task.description || t("No description provided.", "No description provided.")}</div>
               </div>
             `
             )
@@ -302,18 +336,17 @@ function renderWarnings() {
           return `
             <div class="warning-item">
               <div class="warning-item-summary" data-tag="${tag}">
-                <span class="warning-icon">🚨</span> #${tag} — ${tagCounts[tag]} tasks
+                <span class="warning-icon">!</span> #${tag} - ${tagCounts[tag]} ${t("tasks", "tasks")}
               </div>
               <div class="warning-details hidden">${relatedTasks}</div>
             </div>
           `;
         })
         .join("")
-    : `<p class="warning-item clear"><span class="warning-icon">✅</span> No overloaded tags!</p>`;
+    : `<p class="warning-item clear"><span class="warning-icon">OK</span> ${t("No overloaded tags!", "No overloaded tags!")}</p>`;
 
   document.getElementById("overloaded-tag-list").innerHTML = tagHTML;
 
-  // ✨ Interaction: Toggle visibility on click
   document.querySelectorAll(".warning-item-summary").forEach((summary) => {
     summary.addEventListener("click", () => {
       const next = summary.nextElementSibling;
@@ -329,14 +362,10 @@ function renderWarnings() {
   });
 
   document.querySelectorAll(".extend-btn").forEach((btn) => {
-    btn.addEventListener("click", (e) => {
+    btn.addEventListener("click", () => {
       const taskText = btn.dataset.text;
-
-      // Hide the specific warning container
       const warningItem = btn.closest(".warning-item");
       if (warningItem) warningItem.remove();
-
-      // Update due date and refresh the board
       extendDueDate(taskText);
     });
   });
@@ -351,6 +380,8 @@ function renderPriorityTrends() {
   const highData = trends.map((t) => t.high || 0);
 
   const ctx = document.getElementById("priorityTrendChart").getContext("2d");
+  const { textColor, gridColor } = getChartTheme();
+
   if (window.priorityTrendChart instanceof Chart) {
     window.priorityTrendChart.destroy();
   }
@@ -392,16 +423,18 @@ function renderPriorityTrends() {
         title: {
           display: true,
           text: "Task Priorities Over Time",
+          color: textColor,
         },
+        legend: { labels: { color: textColor } },
       },
       scales: {
         y: {
           beginAtZero: true,
-          title: { display: true, text: "Task Count" },
+          title: { display: true, text: "Task Count", color: textColor },
+          ticks: { color: textColor },
+          grid: { color: gridColor },
         },
-        x: {
-          title: { display: true, text: "Date" },
-        },
+        x: { title: { display: true, text: "Date", color: textColor }, ticks: { color: textColor }, grid: { color: gridColor } },
       },
     },
   });
@@ -435,6 +468,8 @@ function renderCompletionByTag() {
   });
 
   const ctx = document.getElementById("completionRateByTagChart").getContext("2d");
+  const { textColor, gridColor } = getChartTheme();
+
   if (window.completionByTagChart instanceof Chart) window.completionByTagChart.destroy();
 
   window.completionByTagChart = new Chart(ctx, {
@@ -455,14 +490,18 @@ function renderCompletionByTag() {
         title: {
           display: true,
           text: "Completion Time by Tag",
+          color: textColor,
         },
-        legend: { display: false },
+        legend: { display: false, labels: { color: textColor } },
       },
       scales: {
         y: {
           beginAtZero: true,
-          title: { display: true, text: "Days" },
+          title: { display: true, text: "Days", color: textColor },
+          ticks: { color: textColor },
+          grid: { color: gridColor },
         },
+        x: { ticks: { color: textColor }, grid: { color: gridColor } },
       },
     },
   });

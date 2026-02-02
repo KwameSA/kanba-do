@@ -10,18 +10,18 @@ function simulateFakeTrendData() {
   const fakeTrends = [];
 
   const baseDate = new Date();
-  baseDate.setDate(baseDate.getDate() - 6);
+  baseDate.setDate(baseDate.getDate() - 27);
 
-  for (let i = 0; i < 7; i++) {
+  for (let i = 0; i < 28; i++) {
     const date = new Date(baseDate);
     date.setDate(baseDate.getDate() + i);
     const dateStr = date.toISOString().split("T")[0];
 
     fakeTrends.push({
       date: dateStr,
-      do: Math.max(0, 7 - i),
-      doing: i % 3,
-      done: i,
+      do: Math.max(0, 18 - Math.floor(i / 2)),
+      doing: Math.max(0, 6 - (i % 4)),
+      done: Math.max(0, i - 3),
     });
   }
 
@@ -33,7 +33,7 @@ function simulateFakeTasksWithTags() {
 
   const tagPool = ["school", "urgent", "project", "fitness", "fun", "deepwork", "health", "family", "read", "longterm"];
 
-  for (let i = 0; i < 20; i++) {
+  for (let i = 0; i < 30; i++) {
     const tagCount = Math.floor(Math.random() * 2) + 1;
     const tags = [];
 
@@ -42,14 +42,28 @@ function simulateFakeTasksWithTags() {
       if (!tags.includes(tag)) tags.push(tag);
     }
 
+    const status = ["do", "doing", "done"][Math.floor(Math.random() * 3)];
+    const dateAdded = new Date();
+    dateAdded.setDate(dateAdded.getDate() - Math.floor(Math.random() * 30));
+    const dueChance = Math.random();
+    const dueDate =
+      dueChance < 0.7
+        ? new Date(dateAdded.getTime() + (Math.floor(Math.random() * 10) + 1) * 24 * 60 * 60 * 1000).toISOString().split("T")[0]
+        : "";
+    const completedAt =
+      status === "done"
+        ? new Date(dateAdded.getTime() + (Math.floor(Math.random() * 5) + 1) * 24 * 60 * 60 * 1000).toISOString()
+        : null;
+
     fakeTasks.push({
       text: `Fake Task ${i + 1}`,
       description: "Auto-generated",
       priority: ["low", "medium", "high"][Math.floor(Math.random() * 3)],
-      duedate: "",
+      duedate: dueDate,
       checked: false,
-      dateAdded: new Date().toISOString(),
-      status: ["do", "doing", "done"][Math.floor(Math.random() * 3)],
+      dateAdded: dateAdded.toISOString(),
+      completedAt,
+      status,
       tags: tags.join(","),
     });
   }
@@ -63,9 +77,9 @@ function simulateInsightsData() {
   const updatedTasks = tasks.map((task, i) => {
     if (task.status === "done") {
       const base = new Date();
-      base.setDate(base.getDate() - (i % 5));
+      base.setDate(base.getDate() - (i % 21));
 
-      const daysTaken = Math.floor(Math.random() * 4) + 1;
+      const daysTaken = Math.floor(Math.random() * 7) + 1;
       const added = new Date(base);
       const completed = new Date(base);
       completed.setDate(base.getDate() + daysTaken);
@@ -87,7 +101,7 @@ function simulateWarningsData() {
 
   const today = new Date();
   const stagnantDate = new Date(today);
-  stagnantDate.setDate(today.getDate() - 5);
+  stagnantDate.setDate(today.getDate() - 10);
 
   for (let i = 0; i < 4; i++) {
     tasks.push({
@@ -121,9 +135,9 @@ function simulateWarningsData() {
 function simulatePriorityTrends() {
   const fakeTrends = [];
   const baseDate = new Date();
-  baseDate.setDate(baseDate.getDate() - 6);
+  baseDate.setDate(baseDate.getDate() - 27);
 
-  for (let i = 0; i < 7; i++) {
+  for (let i = 0; i < 28; i++) {
     const date = new Date(baseDate);
     date.setDate(baseDate.getDate() + i);
     const dateStr = date.toISOString().split("T")[0];
@@ -134,9 +148,9 @@ function simulatePriorityTrends() {
 
     fakeTrends.push({
       date: dateStr,
-      do: Math.floor(Math.random() * 4),
-      doing: Math.floor(Math.random() * 3),
-      done: Math.floor(Math.random() * 5),
+      do: Math.floor(Math.random() * 8),
+      doing: Math.floor(Math.random() * 6),
+      done: Math.floor(Math.random() * 10),
       low,
       medium,
       high,

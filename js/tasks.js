@@ -271,14 +271,17 @@ export function assignDragHandlers(li) {
 }
 
 ["do", "doing", "done"].forEach((section) => {
-  containers[section].setAttribute("aria-label", `${section} task list`);
-  containers[section].setAttribute("role", "list");
+  const container = containers[section];
+  if (!container) return;
+  container.setAttribute("aria-label", `${section} task list`);
+  container.setAttribute("role", "list");
 });
 
 export function updateNotifications() {
   const count = Array.from(document.querySelectorAll(".task-item")).filter((task) => task.classList.contains("overdue")).length;
 
   const badge = document.getElementById("notification-count");
+  if (!badge) return;
   if (count > 0) {
     badge.textContent = count;
     badge.classList.remove("hidden");

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Kanba-DO | Notifications</title>
+    <script>
+      try {
+        const lang = localStorage.getItem("kanbaLang");
+        if (lang) {
+          document.documentElement.setAttribute("data-lang", lang);
+        }
+        document.documentElement.classList.add("i18n-loading");
+        if (localStorage.getItem("darkMode") === "enabled") {
+          document.documentElement.classList.add("dark");
+        }
+      } catch {}
+    </script>
+    <link href="../assets/css/main.css" rel="stylesheet" />
+    <link href="../assets/images/favicon-32x32.png" rel="icon" sizes="32x32" type="image/png" />
+  </head>
+  <body>
+    <header class="main-nav">
+      <div class="nav-brand"><a href="../index.html">Kanba-DO</a></div>
+      <nav class="nav-links">
+        <a data-i18n="Board" href="../index.html">Board</a>
+        <a data-i18n="Settings" href="settings.html">Settings</a>
+        <a data-i18n="Analytics" href="analytics.html">Analytics</a>
+        <a data-i18n="Data" href="import-export.html">Data</a>
+        <a class="active" data-i18n="Notifications" href="notifications.html">Notifications</a>
+        <a data-i18n="Help" href="faqs.html">Help</a>
+      </nav>
+    </header>
+
+    <main class="page">
+      <h1 data-i18n="Notifications">Notifications</h1>
+
+      <section class="page-card">
+        <details open="">
+          <summary data-i18n="Tasks Overdue"><h2 data-i18n="Tasks Overdue">Tasks Overdue</h2></summary>
+          <ul id="overdue-list"></ul>
+          <p data-i18n="No overdue tasks! You're doing great!" id="no-overdue-msg">No overdue tasks! You're doing great!</p>
+        </details>
+        <details open="">
+          <summary data-i18n="Tasks Due Soon"><h2 data-i18n="Tasks Due Soon">Tasks Due Soon</h2></summary>
+          <ul id="duesoon-list"></ul>
+          <p data-i18n="No tasks due soon! All good!" id="no-duesoon-msg">No tasks due soon! All good!</p>
+        </details>
+      </section>
+    </main>
+
+    <script type="module" src="../js/notifications-page.js"></script>
+  </body>
+</html>

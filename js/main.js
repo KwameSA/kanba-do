@@ -1,32 +1,20 @@
-import { bindGlobalEvents } from "./events.js";
-import { bindPanelEvents } from "./panels.js";
-import { showTask, updateNotifications, addEntry } from "./tasks.js";
-import { initSimulationToggle } from "./simulation.js";
-import { applyTranslations, highlightActiveLanguage } from "./dictionary.js";
+import { bindBoardEvents } from "./board-events.js";
+import { bindDragDrop } from "./dragdrop.js";
+import { showTask, updateNotifications } from "./tasks.js";
+import { saveDailySnapshot } from "./storage.js";
+import { initCommon } from "./page-common.js";
+import { bindModalEvents } from "./modals.js";
 
 // Run everything only after DOM is ready
 window.addEventListener("DOMContentLoaded", () => {
-  const lang = localStorage.getItem("kanbaLang") || "en";
-  document.getElementById("add-button").addEventListener("click", addEntry);
-
+  initCommon();
+  bindModalEvents();
   // Set footer year
   document.getElementById("currentYear").textContent = new Date().getFullYear();
-
-  if (localStorage.getItem("darkMode") === "enabled") {
-    document.body.classList.add("dark");
-    const icon = document.getElementById("moon-icon");
-    icon?.classList.remove("fa-moon");
-    icon?.classList.add("fa-sun");
-  }
-
-  applyTranslations(lang);
-  highlightActiveLanguage(lang);
-  setTimeout(() => highlightActiveLanguage(lang), 50);
-
-  bindGlobalEvents();
-  bindPanelEvents();
-  initSimulationToggle();
+  bindBoardEvents();
+  bindDragDrop();
 
   showTask();
   updateNotifications();
+  saveDailySnapshot();
 });
