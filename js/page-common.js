@@ -1,4 +1,5 @@
 import { applyTranslations, highlightActiveLanguage } from "./dictionary.js";
+import { initPwa } from "./pwa.js";
 
 export function initCommon() {
   const lang = localStorage.getItem("kanbaLang") || "en";
@@ -15,6 +16,7 @@ export function initCommon() {
   applyTranslations(lang);
   highlightActiveLanguage(lang);
   setTimeout(() => highlightActiveLanguage(lang), 50);
+  initPwa();
 
   document.documentElement.classList.remove("i18n-loading");
 }

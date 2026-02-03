@@ -3,6 +3,7 @@ import { elements } from "./constants.js";
 import { showTask, updateDueStatus, updateNotifications } from "./tasks.js";
 import { stringToColor } from "./utils.js";
 import { saveTask } from "./storage.js";
+import { nowIso } from "./task-model.js";
 
 let currentTaskElement = null;
 
@@ -22,6 +23,7 @@ export function bindModalEvents() {
     currentTaskElement.dataset.priority = elements.modalTaskPriority.value;
     currentTaskElement.dataset.duedate = elements.modalTaskDueDate.value;
     currentTaskElement.dataset.tags = elements.modalTaskTags.value.trim();
+    currentTaskElement.dataset.updatedAt = nowIso();
 
     priorityDot.classList.remove("priority-low", "priority-medium", "priority-high");
     priorityDot.classList.add(`priority-${elements.modalTaskPriority.value}`);

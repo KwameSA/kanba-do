@@ -1,4 +1,5 @@
 import { initCommon } from "./page-common.js";
+import { writeTasksToStorage } from "./task-model.js";
 
 function bindImportExport() {
   const importButton = document.getElementById("import-btn");
@@ -10,7 +11,7 @@ function bindImportExport() {
       const text = document.getElementById("import-textarea").value.trim();
       try {
         const tasks = JSON.parse(text);
-        localStorage.setItem("kanbaTasks", JSON.stringify(tasks));
+        writeTasksToStorage(tasks);
         document.getElementById("import-status").textContent = "Tasks imported successfully!";
       } catch (err) {
         document.getElementById("import-status").textContent = "Invalid JSON.";
@@ -31,7 +32,7 @@ function bindImportExport() {
       reader.onload = (event) => {
         try {
           const tasks = JSON.parse(event.target.result);
-          localStorage.setItem("kanbaTasks", JSON.stringify(tasks));
+          writeTasksToStorage(tasks);
           document.getElementById("import-status").textContent = "Tasks imported successfully!";
         } catch (err) {
           document.getElementById("import-status").textContent = "Invalid file.";

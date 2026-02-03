@@ -1,0 +1,15 @@
+{
+  "name": "Kanba-DO",
+  "short_name": "Kanba-DO",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f8f9fb",
+  "theme_color": "#2b7bdc",
+  "icons": [
+    {
+      "src": "assets/images/favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    }
+  ]
+}

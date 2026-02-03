@@ -1,4 +1,5 @@
 import { initCommon } from "./page-common.js";
+import { readTasksFromStorage } from "./task-model.js";
 
 function getDueStatus(task) {
   if (!task.duedate) return "none";
@@ -23,7 +24,7 @@ function renderNotifications() {
   const noOverdueMsg = document.getElementById("no-overdue-msg");
   const noDueSoonMsg = document.getElementById("no-duesoon-msg");
 
-  const tasks = JSON.parse(localStorage.getItem("kanbaTasks")) || [];
+  const tasks = readTasksFromStorage();
   const activeTasks = tasks.filter((task) => task.status !== "done");
 
   const overdueTasks = activeTasks.filter((task) => getDueStatus(task) === "overdue");

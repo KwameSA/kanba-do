@@ -2,6 +2,18 @@ import { initCommon } from "./page-common.js";
 import { renderAnalyticsChart, renderTrendChart, renderTagChart, renderInsights, renderCompletionChart, renderPriorityTrends, renderCompletionByTag, renderWarnings } from "./analytics.js";
 import { exportTasksToCSV, exportToPDF, downloadChartImage } from "./export.js";
 import { translations } from "./dictionary.js";
+import { readTasksFromStorage } from "./task-model.js";
+import { computeOpsMetrics, computeWeeklyReview } from "./metrics.js";
+
+function downloadBlob(filename, content, type) {
+  const blob = new Blob([content], { type });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  link.click();
+  URL.revokeObjectURL(url);
+}
 
 function bindExportButtons() {
   const exportFull = document.getElementById("export-pdf-full");
@@ -95,12 +107,26 @@ function bindExportButtons() {
       downloadChartImage(chartId);
     });
   });
+
+  const exportWeeklyJson = document.getElementById("export-weekly-json");
+  exportWeeklyJson?.addEventListener("click", () => {
+    const weekly = computeWeeklyReview(readTasksFromStorage(), new Date());
+    downloadBlob("kanba-weekly-review.json", JSON.stringify(weekly, null, 2), "application/json");
+  });
+
+  const exportWeeklyCsv = document.getElementById("export-weekly-csv");
+  exportWeeklyCsv?.addEventListener("click", () => {
+    const weekly = computeWeeklyReview(readTasksFromStorage(), new Date());
+    const headers = Object.keys(weekly);
+    const values = headers.map((key) => `"${String(weekly[key] ?? "").replace(/"/g, '""')}"`);
+    downloadBlob("kanba-weekly-review.csv", `${headers.join(",")}\n${values.join(",")}`, "text/csv;charset=utf-8;");
+  });
 }
 
 function renderInsightCards() {
   const lang = localStorage.getItem("kanbaLang") || "en";
   const t = (key, fallback = key) => translations?.[lang]?.[key] || fallback;
-  const tasks = JSON.parse(localStorage.getItem("kanbaTasks")) || [];
+  const tasks = readTasksFromStorage();
   const total = tasks.length;
   const overdue = tasks.filter((task) => {
     if (!task.duedate || task.status === "done") return false;
@@ -113,7 +139,7 @@ function renderInsightCards() {
 
   const completed = tasks.filter((task) => task.status === "done" && task.completedAt);
   const durations = completed.map((t) => {
-    const start = new Date(t.dateAdded);
+    const start = new Date(t.createdAt || t.dateAdded);
     const end = new Date(t.completedAt);
     return (end - start) / (1000 * 60 * 60 * 24);
   });
@@ -137,9 +163,36 @@ function renderInsightCards() {
   document.getElementById("insight-top-tag").textContent = topTag ? `#${topTag}` : t("None", "None");
 }
 
+function renderOpsMetrics() {
+  const metrics = computeOpsMetrics(readTasksFromStorage(), new Date());
+  const avgCycle = metrics.avgCycleDays == null ? "N/A" : `${metrics.avgCycleDays.toFixed(2)} days`;
+  const avgLead = metrics.avgLeadDays == null ? "N/A" : `${metrics.avgLeadDays.toFixed(2)} days`;
+
+  document.getElementById("ops-wip").textContent = metrics.wip;
+  document.getElementById("ops-throughput").textContent = metrics.throughput7d;
+  document.getElementById("ops-cycle").textContent = avgCycle;
+  document.getElementById("ops-lead").textContent = avgLead;
+  document.getElementById("ops-stagnant").textContent = metrics.stagnantDoing;
+}
+
+function renderWeeklyReview() {
+  const weekly = computeWeeklyReview(readTasksFromStorage(), new Date());
+  const avg = weekly.avgCycleCompletedThisWeek == null ? "N/A" : `${weekly.avgCycleCompletedThisWeek.toFixed(2)} days`;
+
+  document.getElementById("weekly-completed").textContent = weekly.completedThisWeek;
+  document.getElementById("weekly-created").textContent = weekly.createdThisWeek;
+  document.getElementById("weekly-overdue").textContent = weekly.overdueCount;
+  document.getElementById("weekly-cycle").textContent = avg;
+  document.getElementById("weekly-top-tag").textContent = weekly.topTagOfWeek ? `#${weekly.topTagOfWeek}` : "None";
+  document.getElementById("weekly-bottleneck").textContent = weekly.bottleneck;
+  document.getElementById("weekly-definition").textContent = weekly.definition;
+}
+
 window.addEventListener("DOMContentLoaded", () => {
   initCommon();
   renderInsightCards();
+  renderOpsMetrics();
+  renderWeeklyReview();
   renderAnalyticsChart();
   renderTrendChart();
   renderTagChart();

@@ -17,6 +17,7 @@
       } catch {}
     </script>
     <link href="../assets/css/main.css" rel="stylesheet" />
+    <link href="../manifest.json" rel="manifest" />
     <link href="../assets/images/favicon-32x32.png" rel="icon" sizes="32x32" type="image/png" />
   </head>
   <body>
@@ -59,6 +60,64 @@
               <p class="insight-value" id="insight-top-tag">None</p>
               <p class="insight-sub" data-i18n="Most used tag" id="insight-top-tag-sub">Most used tag</p>
             </div>
+          </div>
+        </section>
+
+        <section class="analytics-section">
+          <div class="chart-card">
+            <h2>Operational Metrics</h2>
+            <div class="insight-cards">
+              <div class="insight-card">
+                <p class="insight-label">WIP (DOING)</p>
+                <p class="insight-value" id="ops-wip">0</p>
+              </div>
+              <div class="insight-card">
+                <p class="insight-label">Throughput (7d)</p>
+                <p class="insight-value" id="ops-throughput">0</p>
+              </div>
+              <div class="insight-card">
+                <p class="insight-label">Avg Cycle Time</p>
+                <p class="insight-value" id="ops-cycle">N/A</p>
+              </div>
+              <div class="insight-card">
+                <p class="insight-label">Avg Lead Time</p>
+                <p class="insight-value" id="ops-lead">N/A</p>
+              </div>
+              <div class="insight-card">
+                <p class="insight-label">Stagnant DOING (3d+)</p>
+                <p class="insight-value" id="ops-stagnant">0</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="analytics-section">
+          <div class="chart-card">
+            <h2>Weekly Review</h2>
+            <p class="section-help" id="weekly-definition"></p>
+            <div class="insight-cards">
+              <div class="insight-card">
+                <p class="insight-label">Completed This Week</p>
+                <p class="insight-value" id="weekly-completed">0</p>
+              </div>
+              <div class="insight-card">
+                <p class="insight-label">Created This Week</p>
+                <p class="insight-value" id="weekly-created">0</p>
+              </div>
+              <div class="insight-card">
+                <p class="insight-label">Current Overdue</p>
+                <p class="insight-value" id="weekly-overdue">0</p>
+              </div>
+              <div class="insight-card">
+                <p class="insight-label">Avg Cycle (Completed This Week)</p>
+                <p class="insight-value" id="weekly-cycle">N/A</p>
+              </div>
+              <div class="insight-card">
+                <p class="insight-label">Top Tag Of The Week</p>
+                <p class="insight-value" id="weekly-top-tag">None</p>
+              </div>
+            </div>
+            <p id="weekly-bottleneck"></p>
           </div>
         </section>
 
@@ -139,6 +198,8 @@
         <button data-i18n="Export to CSV" id="export-csv-btn">Export to CSV</button>
         <button data-i18n="Export Full Report (PDF)" id="export-pdf-full">Export Full Report (PDF)</button>
         <button data-i18n="Export Current Tab (PDF)" id="export-pdf-current">Export Current Tab (PDF)</button>
+        <button id="export-weekly-json">Export Weekly Review JSON</button>
+        <button id="export-weekly-csv">Export Weekly Review CSV</button>
         <button class="download-btn" data-chart-id="completionTimeChart" data-i18n="Download Chart (PNG)">Download Chart (PNG)</button>
       </div>
     </main>

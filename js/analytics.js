@@ -1,6 +1,7 @@
 import { stringToColor } from "./utils.js";
 import { extendDueDate } from "./tasks.js";
 import { translations } from "./dictionary.js";
+import { readTasksFromStorage } from "./task-model.js";
 
 function getChartTheme() {
   const textColor = getComputedStyle(document.body).getPropertyValue("--text-color").trim() || "#fff";
@@ -9,7 +10,7 @@ function getChartTheme() {
 }
 
 function renderAnalyticsChart() {
-  const tasks = JSON.parse(localStorage.getItem("kanbaTasks")) || [];
+  const tasks = readTasksFromStorage();
 
   const counts = { do: 0, doing: 0, done: 0 };
   tasks.forEach((task) => {
@@ -126,7 +127,7 @@ function renderTrendChart() {
 
 function renderTagChart() {
   const ctx = document.getElementById("tagChart").getContext("2d");
-  const tasks = JSON.parse(localStorage.getItem("kanbaTasks")) || [];
+  const tasks = readTasksFromStorage();
 
   const tagCounts = {};
 
@@ -177,11 +178,11 @@ function renderTagChart() {
 }
 
 function renderInsights() {
-  const tasks = JSON.parse(localStorage.getItem("kanbaTasks")) || [];
+  const tasks = readTasksFromStorage();
   const completedTasks = tasks.filter((t) => t.status === "done" && t.completedAt);
 
   const durations = completedTasks.map((t) => {
-    const start = new Date(t.dateAdded);
+    const start = new Date(t.createdAt || t.dateAdded);
     const end = new Date(t.completedAt);
     return (end - start) / (1000 * 60 * 60 * 24); // in days
   });
@@ -192,14 +193,14 @@ function renderInsights() {
 }
 
 function renderCompletionChart() {
-  const tasks = JSON.parse(localStorage.getItem("kanbaTasks")) || [];
+  const tasks = readTasksFromStorage();
   const completed = tasks.filter((t) => t.status === "done" && t.completedAt);
 
   const dateMap = {};
 
   completed.forEach((t) => {
     const completeDate = new Date(t.completedAt).toISOString().split("T")[0];
-    const added = new Date(t.dateAdded);
+    const added = new Date(t.createdAt || t.dateAdded);
     const completedAt = new Date(t.completedAt);
     const duration = (completedAt - added) / (1000 * 60 * 60 * 24);
 
@@ -269,12 +270,12 @@ function renderCompletionChart() {
 function renderWarnings() {
   const lang = localStorage.getItem("kanbaLang") || "en";
   const t = (key, fallback = key) => translations?.[lang]?.[key] || fallback;
-  const tasks = JSON.parse(localStorage.getItem("kanbaTasks")) || [];
+  const tasks = readTasksFromStorage();
   const today = new Date();
 
   const stagnantTasks = tasks.filter((task) => {
     if (task.status === "done") return false;
-    const added = new Date(task.dateAdded);
+    const added = new Date(task.createdAt || task.dateAdded);
     const age = (today - added) / (1000 * 60 * 60 * 24);
     return age > 3;
   });
@@ -441,7 +442,7 @@ function renderPriorityTrends() {
 }
 
 function renderCompletionByTag() {
-  const tasks = JSON.parse(localStorage.getItem("kanbaTasks")) || [];
+  const tasks = readTasksFromStorage();
   const completedTasks = tasks.filter((t) => t.status === "done" && t.completedAt);
 
   const tagMap = {};
@@ -451,7 +452,7 @@ function renderCompletionByTag() {
       .split(",")
       .map((t) => t.trim())
       .filter(Boolean);
-    const added = new Date(task.dateAdded);
+    const added = new Date(task.createdAt || task.dateAdded);
     const completed = new Date(task.completedAt);
     const duration = (completed - added) / (1000 * 60 * 60 * 24);
 

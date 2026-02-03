@@ -4,18 +4,112 @@ import { elements, containers } from "./constants.js";
 import { applyTranslations } from "./dictionary.js";
 
 let activeTagFilter = null;
+let activeDateFilter = null;
+let activeViewFilter = "all";
+
+function updateDateFilterIndicator() {
+  const indicator = document.getElementById("date-filter-indicator");
+  const label = document.getElementById("active-date-label");
+  if (!indicator || !label) return;
+  if (activeDateFilter) {
+    indicator.style.display = "block";
+    label.textContent = activeDateFilter;
+  } else {
+    indicator.style.display = "none";
+    label.textContent = "";
+  }
+}
+
+function applySearchHighlight(taskTextEl, term) {
+  const originalText = taskTextEl?.dataset.originalText || taskTextEl.textContent;
+  if (!term) {
+    taskTextEl.innerHTML = originalText;
+    return;
+  }
+  const title = originalText.toLowerCase();
+  if (!title.includes(term)) {
+    taskTextEl.innerHTML = originalText;
+    return;
+  }
+  const matchStart = title.indexOf(term);
+  const matchEnd = matchStart + term.length;
+  const before = originalText.slice(0, matchStart);
+  const match = originalText.slice(matchStart, matchEnd);
+  const after = originalText.slice(matchEnd);
+  taskTextEl.innerHTML = `${before}<mark>${match}</mark>${after}`;
+  taskTextEl.dataset.originalText = originalText;
+}
+
+function taskMatchesViewFilter(task) {
+  const priority = task.dataset.priority;
+  const isOverdue = task.classList.contains("overdue");
+  const isDueSoon = task.classList.contains("due-soon");
+  if (activeViewFilter === "all") return true;
+  if (activeViewFilter === "overdue") return isOverdue;
+  if (activeViewFilter === "duesoon") return isDueSoon;
+  return priority === activeViewFilter;
+}
+
+function taskMatchesDateFilter(task) {
+  if (!activeDateFilter) return true;
+  return (task.dataset.duedate || "") === activeDateFilter;
+}
+
+function taskMatchesSearchAndTag(task, term) {
+  const taskTextEl = task.querySelector(".task-text");
+  const originalText = taskTextEl?.dataset.originalText || taskTextEl.textContent;
+  const title = originalText.toLowerCase();
+  const description = (task.dataset.description || "").toLowerCase();
+  const tags = (task.dataset.tags || "").toLowerCase();
+  const tagList = (task.dataset.tags || "")
+    .split(",")
+    .map((t) => t.trim())
+    .filter(Boolean);
+
+  const tagMatches = !activeTagFilter || tagList.includes(activeTagFilter);
+  const searchMatches = !term || title.includes(term) || description.includes(term) || tags.includes(term);
+  applySearchHighlight(taskTextEl, term);
+  return tagMatches && searchMatches;
+}
+
+function applyBoardFilters() {
+  const term = elements.searchStatus?.value.trim().toLowerCase() || "";
+  const info = document.getElementById("search-info");
+  if (info) info.style.display = term.length > 0 ? "block" : "none";
+
+  ["do", "doing", "done"].forEach((section) => {
+    Array.from(containers[section].children).forEach((task) => {
+      const show =
+        taskMatchesSearchAndTag(task, term) &&
+        taskMatchesDateFilter(task) &&
+        taskMatchesViewFilter(task);
+      task.style.display = show ? "flex" : "none";
+    });
+  });
+
+  updateDateFilterIndicator();
+}
+
+function setDateFilter(dateKey) {
+  activeDateFilter = dateKey || null;
+  applyBoardFilters();
+  document.dispatchEvent(new CustomEvent("kanba:date-filter-changed"));
+}
+
+function getActiveDateFilter() {
+  return activeDateFilter;
+}
+
+export { applyBoardFilters, getActiveDateFilter, setDateFilter };
 
 export function bindBoardEvents() {
   const addButton = document.getElementById("add-button");
-  if (addButton) {
-    addButton.addEventListener("click", addEntry);
-  }
+  if (addButton) addButton.addEventListener("click", addEntry);
 
   if (elements.inputBox) {
     elements.inputBox.addEventListener("keydown", (e) => {
       if (e.key === "Enter") addEntry();
     });
-
     elements.inputBox.addEventListener("focus", () => {
       if (elements.errorMessage) elements.errorMessage.style.display = "none";
     });
@@ -31,115 +125,55 @@ export function bindBoardEvents() {
     });
   }
 
-  if (elements.cancelReset) {
-    elements.cancelReset.addEventListener("click", () => {
-      elements.resetModal.classList.add("hidden");
-    });
-  }
+  elements.cancelReset?.addEventListener("click", () => elements.resetModal.classList.add("hidden"));
+  elements.cancelModal?.addEventListener("click", () => (elements.taskModal.style.display = "none"));
 
-  if (elements.cancelModal) {
-    elements.cancelModal.addEventListener("click", () => {
-      elements.taskModal.style.display = "none";
-    });
-  }
-
-  if (elements.confirmReset) {
-    elements.confirmReset.addEventListener("click", () => {
-      localStorage.removeItem("kanbaTasks");
-      showTask();
-      elements.resetModal.classList.add("hidden");
-    });
-  }
+  elements.confirmReset?.addEventListener("click", () => {
+    localStorage.removeItem("kanbaTasks");
+    showTask();
+    elements.resetModal.classList.add("hidden");
+  });
 
   if (elements.taskViewSelect) {
     elements.taskViewSelect.addEventListener("change", (e) => {
       const value = e.target.value;
-
       if (value.startsWith("sort-")) {
         const mode = value.replace("sort-", "");
-        ["do", "doing", "done"].forEach((section) => {
-          sortTasks(section, mode);
-        });
+        ["do", "doing", "done"].forEach((section) => sortTasks(section, mode));
       } else if (value.startsWith("filter-")) {
-        const filter = value.replace("filter-", "");
-
-        document.querySelectorAll(".task-item").forEach((task) => {
-          const priority = task.dataset.priority;
-          const isOverdue = task.classList.contains("overdue");
-          const isDueSoon = task.classList.contains("due-soon");
-
-          if (filter === "all") {
-            task.style.display = "flex";
-          } else if (filter === "overdue") {
-            task.style.display = isOverdue ? "flex" : "none";
-          } else if (filter === "duesoon") {
-            task.style.display = isDueSoon ? "flex" : "none";
-          } else {
-            task.style.display = priority === filter ? "flex" : "none";
-          }
-        });
+        activeViewFilter = value.replace("filter-", "");
       }
+      applyBoardFilters();
     });
   }
 
-  if (elements.searchStatus) {
-    elements.searchStatus.addEventListener("input", () => {
-      const term = elements.searchStatus.value.trim().toLowerCase();
-      const info = document.getElementById("search-info");
+  elements.searchStatus?.addEventListener("input", () => {
+    const term = elements.searchStatus.value.trim().toLowerCase();
+    if (term.length > 0) {
+      activeTagFilter = null;
+      document.body.dataset.activeTagFilter = "";
+      updateTagFilterUI(null);
+    }
+    applyBoardFilters();
+  });
 
-      if (info) {
-        info.style.display = term.length > 0 ? "block" : "none";
-      }
-
-      if (term.length > 0) {
-        activeTagFilter = null;
-        updateTagFilterUI(null);
-      }
-
-      ["do", "doing", "done"].forEach((section) => {
-        Array.from(containers[section].children).forEach((li) => {
-          const taskTextEl = li.querySelector(".task-text");
-          const originalText = taskTextEl?.dataset.originalText || taskTextEl.textContent;
-          const title = originalText.toLowerCase();
-          const description = (li.dataset.description || "").toLowerCase();
-          const tags = (li.dataset.tags || "").toLowerCase();
-
-          const tagMatches =
-            !activeTagFilter ||
-            (li.dataset.tags || "")
-              .split(",")
-              .map((t) => t.trim())
-              .includes(activeTagFilter);
-
-          const searchMatches = title.includes(term) || description.includes(term) || tags.includes(term);
-
-          const show = searchMatches && tagMatches;
-          li.style.display = show ? "flex" : "none";
-
-          if (term && title.includes(term)) {
-            const matchStart = title.indexOf(term);
-            const matchEnd = matchStart + term.length;
-            const before = originalText.slice(0, matchStart);
-            const match = originalText.slice(matchStart, matchEnd);
-            const after = originalText.slice(matchEnd);
-            taskTextEl.innerHTML = `${before}<mark>${match}</mark>${after}`;
-            taskTextEl.dataset.originalText = originalText;
-          } else {
-            taskTextEl.innerHTML = originalText;
-          }
-        });
-      });
-    });
-  }
+  document.addEventListener("kanba:set-tag-filter", (event) => {
+    activeTagFilter = event.detail?.tag || null;
+    document.body.dataset.activeTagFilter = activeTagFilter || "";
+    updateTagFilterUI(activeTagFilter);
+    applyBoardFilters();
+  });
 
   const clearTagButton = document.getElementById("clear-tag-filter");
-  if (clearTagButton) {
-    clearTagButton.addEventListener("click", () => {
-      activeTagFilter = null;
-      updateTagFilterUI(null);
-      showTask();
-    });
-  }
+  clearTagButton?.addEventListener("click", () => {
+    activeTagFilter = null;
+    document.body.dataset.activeTagFilter = "";
+    updateTagFilterUI(null);
+    applyBoardFilters();
+  });
+
+  const clearDateButton = document.getElementById("clear-date-filter");
+  clearDateButton?.addEventListener("click", () => setDateFilter(null));
 
   document.querySelectorAll(".top-btn-nav button").forEach((btn) => {
     btn.addEventListener("click", () => {
@@ -162,13 +196,15 @@ export function bindBoardEvents() {
 
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
-      if (elements.taskModal && elements.taskModal.style.display === "flex") {
+      if (elements.taskModal?.style.display === "flex") {
         elements.taskModal.style.display = "none";
       }
-
       if (elements.resetModal && !elements.resetModal.classList.contains("hidden")) {
         elements.resetModal.classList.add("hidden");
       }
     }
   });
+
+  window.addEventListener("kanba:tasks-rendered", applyBoardFilters);
+  applyBoardFilters();
 }

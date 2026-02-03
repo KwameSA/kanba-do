@@ -1,5 +1,5 @@
 import { containers } from "./constants.js";
-import { saveTask } from "./storage.js";
+import { moveTaskToStatus } from "./tasks.js";
 
 export function bindDragDrop() {
   ["do", "doing", "done"].forEach((section) => {
@@ -15,9 +15,7 @@ export function bindDragDrop() {
       const taskId = e.dataTransfer.getData("text/plain");
       const dragged = document.getElementById(taskId);
       if (dragged) {
-        container.appendChild(dragged);
-        dragged.dataset.status = section;
-        saveTask();
+        moveTaskToStatus(dragged, section);
       }
     });
   });

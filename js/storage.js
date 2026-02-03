@@ -1,23 +1,39 @@
 import { containers } from "./constants.js";
 import { updateNotifications } from "./tasks.js";
+import { migrateTasks, writeTasksToStorage } from "./task-model.js";
 
 function saveTask() {
   const allTasks = [...containers.do.children, ...containers.doing.children, ...containers.done.children];
 
-  const tasks = allTasks.map((li) => ({
-    text: li.querySelector(".task-text").textContent.trim(),
-    description: li.dataset.description || "",
-    priority: li.dataset.priority || "low",
-    duedate: li.dataset.duedate || "",
-    checked: li.dataset.checked === "true",
-    dateAdded: li.dataset.dateAdded || new Date().toISOString(),
-    status: li.dataset.status,
-    tags: li.dataset.tags || "",
-    completedAt: li.dataset.completedAt || null,
-  }));
+  const tasks = allTasks.map((li) => {
+    let stageHistory = [];
+    try {
+      stageHistory = JSON.parse(li.dataset.stageHistory || "[]");
+    } catch {
+      stageHistory = [];
+    }
 
-  localStorage.setItem("kanbaTasks", JSON.stringify(tasks));
+    return {
+      id: li.dataset.taskId,
+      text: li.querySelector(".task-text").textContent.trim(),
+      description: li.dataset.description || "",
+      priority: li.dataset.priority || "low",
+      duedate: li.dataset.duedate || "",
+      checked: li.dataset.checked === "true",
+      dateAdded: li.dataset.dateAdded || li.dataset.createdAt || new Date().toISOString(),
+      status: li.dataset.status,
+      tags: li.dataset.tags || "",
+      completedAt: li.dataset.completedAt || null,
+      createdAt: li.dataset.createdAt,
+      updatedAt: li.dataset.updatedAt,
+      stageHistory,
+    };
+  });
+
+  const normalized = writeTasksToStorage(tasks);
   updateNotifications();
+  window.dispatchEvent(new CustomEvent("kanba:tasks-updated"));
+  return normalized;
 }
 
 function saveDailySnapshot() {
@@ -26,7 +42,7 @@ function saveDailySnapshot() {
 
   if (existing.some((entry) => entry.date === today)) return;
 
-  const tasks = JSON.parse(localStorage.getItem("kanbaTasks")) || [];
+  const tasks = migrateTasks(JSON.parse(localStorage.getItem("kanbaTasks")) || []);
 
   const snapshot = {
     date: today,

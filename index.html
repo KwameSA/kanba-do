@@ -17,6 +17,7 @@
       } catch {}
     </script>
     <link href="assets/css/main.css" rel="stylesheet" />
+    <link href="manifest.json" rel="manifest" />
     <link href="assets/images/favicon-32x32.png" rel="icon" sizes="32x32" type="image/png" />
   </head>
   <body>
@@ -43,10 +44,15 @@
           <input autocomplete="off" data-i18n="Search tasks..." id="search-status" placeholder="Search tasks..." spellcheck="false" type="search" />
         </div>
         <div class="top-btn-clr">
+          <button class="aside-toggle-btn" id="aside-toggle-btn" type="button">Planner</button>
           <button data-i18n="Reset" id="clearTasksBtn">RESET</button>
         </div>
       </div>
       <p id="search-info">Titles of tasks whose descriptions or tags match are also included in the results.</p>
+      <div id="date-filter-indicator" style="display: none">
+        Filter Active: <strong id="active-date-label"></strong>
+        <button id="clear-date-filter" type="button">Clear</button>
+      </div>
       <div id="congratulations" style="display: none"></div>
       <div id="tag-filter-indicator" style="display: none">
         Showing tasks tagged <strong id="active-tag-label"></strong>
@@ -73,74 +79,112 @@
         </li>
       </template>
 
-      <div class="do-container">
-        <div class="todo-app">
-          <div class="header">
-            <h2>Kanba-DO<img src="images/notes.png" alt="" /></h2>
-            <div class="task-view-option">
-              <select id="task-view-options">
-                <optgroup data-i18n="Sort" label="Sort">
-                  <option data-i18n="Alphabetical" value="sort-alpha">Alphabetical</option>
-                  <option data-i18n="Date Added" value="sort-date">Date Added</option>
-                  <option data-i18n="Due Date" value="sort-due">Due Date</option>
-                  <option data-i18n="Priority" value="sort-priority">Priority</option>
-                </optgroup>
-                <optgroup data-i18n="Filter" label="Filter">
-                  <option data-i18n="All" value="filter-all">All</option>
-                  <option data-i18n="High only" value="filter-high">High only</option>
-                  <option data-i18n="Medium only" value="filter-medium">Medium only</option>
-                  <option data-i18n="Low only" value="filter-low">Low only</option>
-                  <option data-i18n="Overdue" value="filter-overdue">Overdue</option>
-                  <option data-i18n="Due Soon" value="filter-duesoon">Due Soon</option>
-                </optgroup>
-              </select>
+      <div class="board-layout">
+        <div class="board-main">
+          <div class="do-container">
+            <div class="todo-app">
+              <div class="header">
+                <h2>Kanba-DO<img src="images/notes.png" alt="" /></h2>
+                <div class="task-view-option">
+                  <select id="task-view-options">
+                    <optgroup data-i18n="Sort" label="Sort">
+                      <option data-i18n="Alphabetical" value="sort-alpha">Alphabetical</option>
+                      <option data-i18n="Date Added" value="sort-date">Date Added</option>
+                      <option data-i18n="Due Date" value="sort-due">Due Date</option>
+                      <option data-i18n="Priority" value="sort-priority">Priority</option>
+                    </optgroup>
+                    <optgroup data-i18n="Filter" label="Filter">
+                      <option data-i18n="All" value="filter-all">All</option>
+                      <option data-i18n="High only" value="filter-high">High only</option>
+                      <option data-i18n="Medium only" value="filter-medium">Medium only</option>
+                      <option data-i18n="Low only" value="filter-low">Low only</option>
+                      <option data-i18n="Overdue" value="filter-overdue">Overdue</option>
+                      <option data-i18n="Due Soon" value="filter-duesoon">Due Soon</option>
+                    </optgroup>
+                  </select>
+                </div>
+              </div>
+              <div class="do-input">
+                <input autocomplete="off" data-i18n="Enter Your Text Here" id="input-box" placeholder="Enter Your Text Here" type="text" />
+                <button data-i18n="ADD" id="add-button">ADD</button>
+              </div>
+              <div aria-live="assertive" class="error-message" data-i18n="Enter something to be accomplished!!" id="error-message">Enter something to be accomplished!!</div>
+              <ul id="do-container"></ul>
             </div>
           </div>
-          <div class="do-input">
-            <input autocomplete="off" data-i18n="Enter Your Text Here" id="input-box" placeholder="Enter Your Text Here" type="text" />
-            <button data-i18n="ADD" id="add-button">ADD</button>
-          </div>
-          <div aria-live="assertive" class="error-message" data-i18n="Enter something to be accomplished!!" id="error-message">Enter something to be accomplished!!</div>
-          <ul id="do-container"></ul>
-        </div>
-      </div>
 
-      <div class="doing-container">
-        <div class="todoing-app">
-          <div class="header">
-            <h2>Kanba-DOING<img src="images/notes.png" alt="" /></h2>
-          </div>
-          <ul id="doing-container"></ul>
-        </div>
-      </div>
-
-      <div class="done-container">
-        <div class="todone-app">
-          <div class="header">
-            <h2>Kanba-DONE<img src="images/notes.png" alt="" /></h2>
-            <div class="task-view-option">
-              <select id="task-view-options">
-                <optgroup data-i18n="Sort" label="Sort">
-                  <option data-i18n="Alphabetical" value="sort-alpha">Alphabetical</option>
-                  <option data-i18n="Date Added" value="sort-date">Date Added</option>
-                  <option data-i18n="Due Date" value="sort-due">Due Date</option>
-                  <option data-i18n="Priority" value="sort-priority">Priority</option>
-                </optgroup>
-                <optgroup data-i18n="Filter" label="Filter">
-                  <option data-i18n="All" value="filter-all">All</option>
-                  <option data-i18n="High only" value="filter-high">High only</option>
-                  <option data-i18n="Medium only" value="filter-medium">Medium only</option>
-                  <option data-i18n="Low only" value="filter-low">Low only</option>
-                  <option data-i18n="Overdue" value="filter-overdue">Overdue</option>
-                  <option data-i18n="Due Soon" value="filter-duesoon">Due Soon</option>
-                </optgroup>
-              </select>
+          <div class="doing-container">
+            <div class="todoing-app">
+              <div class="header">
+                <h2>Kanba-DOING<img src="images/notes.png" alt="" /></h2>
+              </div>
+              <ul id="doing-container"></ul>
             </div>
           </div>
-          <ul id="done-container"></ul>
+
+          <div class="done-container">
+            <div class="todone-app">
+              <div class="header">
+                <h2>Kanba-DONE<img src="images/notes.png" alt="" /></h2>
+                <div class="task-view-option">
+                  <select id="task-view-options">
+                    <optgroup data-i18n="Sort" label="Sort">
+                      <option data-i18n="Alphabetical" value="sort-alpha">Alphabetical</option>
+                      <option data-i18n="Date Added" value="sort-date">Date Added</option>
+                      <option data-i18n="Due Date" value="sort-due">Due Date</option>
+                      <option data-i18n="Priority" value="sort-priority">Priority</option>
+                    </optgroup>
+                    <optgroup data-i18n="Filter" label="Filter">
+                      <option data-i18n="All" value="filter-all">All</option>
+                      <option data-i18n="High only" value="filter-high">High only</option>
+                      <option data-i18n="Medium only" value="filter-medium">Medium only</option>
+                      <option data-i18n="Low only" value="filter-low">Low only</option>
+                      <option data-i18n="Overdue" value="filter-overdue">Overdue</option>
+                      <option data-i18n="Due Soon" value="filter-duesoon">Due Soon</option>
+                    </optgroup>
+                  </select>
+                </div>
+              </div>
+              <ul id="done-container"></ul>
+            </div>
+          </div>
+
+          <footer>Copyright Ac <span id="currentYear" style="padding: 0 5px"></span> KwameSA</footer>
+        </div>
+        <aside class="board-aside" id="board-aside">
+          <button class="aside-close-btn" id="aside-close-btn" type="button">x</button>
+          <section class="aside-card">
+            <h3>Focus 3</h3>
+            <ul id="focus-list">
+              <li class="focus-empty">Focus suggestions will appear here.</li>
+            </ul>
+          </section>
+          <section class="aside-card">
+            <div class="aside-title-row">
+              <h3>Next 7 Days</h3>
+              <button id="due-filter-all" type="button">All</button>
+            </div>
+            <div id="due-strip"></div>
+          </section>
+          <button class="calendar-open-btn" id="open-calendar-btn" type="button">Calendar</button>
+        </aside>
+      </div>
+
+      <div class="calendar-overlay hidden" id="calendar-overlay">
+        <div class="calendar-panel">
+          <div class="calendar-header">
+            <button id="calendar-prev" type="button">&lt;</button>
+            <h3 id="calendar-month-label">Month Year</h3>
+            <button id="calendar-next" type="button">&gt;</button>
+          </div>
+          <div class="calendar-grid-head">
+            <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+          </div>
+          <div id="calendar-grid"></div>
+          <div class="calendar-task-list" id="calendar-task-list"></div>
+          <button class="btn-secondary" id="close-calendar-btn" type="button">Close</button>
         </div>
       </div>
-      <footer>Copyright Ac <span id="currentYear" style="padding: 0 5px"></span> KwameSA</footer>
     </div>
 
     <div class="task-modal" id="taskModal">

@@ -7,9 +7,21 @@ export function exportTasksToCSV() {
     return;
   }
 
-  const headers = ["Text", "Description", "Priority", "Due Date", "Checked", "Date Added", "Completed At", "Status", "Tags"];
+  const headers = ["Text", "Description", "Priority", "Due Date", "Checked", "Date Added", "Created At", "Updated At", "Completed At", "Status", "Tags"];
 
-  const rows = tasks.map((task) => [`"${task.text}"`, `"${task.description || ""}"`, `"${task.priority || ""}"`, `"${task.duedate || ""}"`, task.checked, `"${task.dateAdded || ""}"`, `"${task.completedAt || ""}"`, `"${task.status || ""}"`, `"${task.tags || ""}"`]);
+  const rows = tasks.map((task) => [
+    `"${task.text}"`,
+    `"${task.description || ""}"`,
+    `"${task.priority || ""}"`,
+    `"${task.duedate || ""}"`,
+    task.checked,
+    `"${task.dateAdded || ""}"`,
+    `"${task.createdAt || ""}"`,
+    `"${task.updatedAt || ""}"`,
+    `"${task.completedAt || ""}"`,
+    `"${task.status || ""}"`,
+    `"${task.tags || ""}"`,
+  ]);
 
   const csvContent = [headers.join(","), ...rows.map((row) => row.join(","))].join("\n");
 
