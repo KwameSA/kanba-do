@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Kanba-DO | Rhythm</title>
+    <script>
+      try {
+        const lang = localStorage.getItem("kanbaLang");
+        if (lang) {
+          document.documentElement.setAttribute("data-lang", lang);
+        }
+        document.documentElement.classList.add("i18n-loading");
+        if (localStorage.getItem("darkMode") === "enabled") {
+          document.documentElement.classList.add("dark");
+        }
+      } catch {}
+    </script>
+    <link href="../assets/css/main.css" rel="stylesheet" />
+    <link href="../manifest.json" rel="manifest" />
+    <link href="../assets/images/favicon-32x32.png" rel="icon" sizes="32x32" type="image/png" />
+  </head>
+  <body>
+    <header class="main-nav">
+      <div class="nav-brand"><a href="../index.html">Kanba-DO</a></div>
+      <nav class="nav-links">
+        <a data-i18n="Board" href="../index.html">Board</a>
+        <a class="active" data-i18n="Rhythm" href="rhythm.html">Rhythm</a>
+        <a data-i18n="Settings" href="settings.html">Settings</a>
+        <a data-i18n="Analytics" href="analytics.html">Analytics</a>
+        <a data-i18n="Data" href="import-export.html">Data</a>
+        <a data-i18n="Notifications" href="notifications.html">Notifications</a>
+        <a data-i18n="Help" href="faqs.html">Help</a>
+      </nav>
+    </header>
+
+    <main class="page">
+      <h1 data-i18n="Rhythm">Rhythm</h1>
+
+      <section class="chart-card">
+        <p id="rhythm-insight-text"></p>
+        <p class="rhythm-empty hidden" id="rhythm-empty-text"></p>
+        <div class="analytics-grid" id="rhythm-chart-wrap">
+          <canvas class="bar-chart" id="rhythmChart"></canvas>
+        </div>
+        <div class="rhythm-actions" id="rhythm-actions">
+          <button data-i18n="Try it" id="rhythm-try-btn">Try it</button>
+          <button class="btn-secondary" data-i18n="Not now" id="rhythm-not-now-btn">Not now</button>
+        </div>
+      </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="module" src="../js/rhythm-page.js"></script>
+  </body>
+</html>

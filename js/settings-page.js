@@ -2,6 +2,10 @@ import { initCommon } from "./page-common.js";
 import { applyTranslations, highlightActiveLanguage } from "./dictionary.js";
 import { simulateFakeTasksWithTags, simulateWarningsData, simulateFakeTrendData, simulateInsightsData, simulatePriorityTrends, simulateTagCompletionData } from "./simulation.js";
 
+function announceTaskDataChanged() {
+  window.dispatchEvent(new CustomEvent("kanba:tasks-updated"));
+}
+
 function setDarkMode(isDark) {
   document.body.classList.toggle("dark", isDark);
   document.documentElement.classList.toggle("dark", isDark);
@@ -58,13 +62,19 @@ function bindSimulationToggle() {
       simulatePriorityTrends();
       simulateTagCompletionData();
       localStorage.setItem("kanbaSimulated", "true");
+      localStorage.removeItem("kanbaActivityMetrics");
       toggle.textContent = "On";
       if (status) status.textContent = "On";
+      announceTaskDataChanged();
     } else {
       localStorage.removeItem("kanbaSimulated");
       localStorage.removeItem("kanbaTasks");
+      localStorage.removeItem("kanbaTrends");
+      localStorage.removeItem("kanbaSimVersion");
+      localStorage.removeItem("kanbaActivityMetrics");
       toggle.textContent = "Off";
       if (status) status.textContent = "Off";
+      announceTaskDataChanged();
     }
   });
 }

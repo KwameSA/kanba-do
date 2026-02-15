@@ -1,4 +1,4 @@
-const CACHE_NAME = "kanbado-core-v1";
+const CACHE_NAME = "kanbado-core-v5";
 const CORE_ASSETS = [
   "./",
   "index.html",
@@ -9,9 +9,17 @@ const CORE_ASSETS = [
   "js/board-events.js",
   "js/board-aside.js",
   "js/task-model.js",
+  "js/page-common.js",
+  "js/dictionary.js",
+  "js/pwa.js",
+  "js/activity-metrics.js",
+  "js/time-buckets.js",
+  "js/rhythm-insight.js",
+  "js/rhythm-page.js",
   "js/metrics.js",
   "pages/settings.html",
   "pages/analytics.html",
+  "pages/rhythm.html",
   "pages/import-export.html",
   "pages/notifications.html",
   "pages/faqs.html",
@@ -43,16 +51,30 @@ self.addEventListener("activate", (event) => {
 
 self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET") return;
+  const url = new URL(event.request.url);
+  const destination = event.request.destination;
+  const isHtml =
+    event.request.mode === "navigate" || (event.request.headers.get("accept") || "").includes("text/html");
+  const isCriticalAsset =
+    isHtml || destination === "style" || destination === "script" || url.pathname.endsWith(".css") || url.pathname.endsWith(".js");
+
   event.respondWith(
-    caches.match(event.request).then((cached) => {
-      if (cached) return cached;
-      return fetch(event.request)
-        .then((response) => {
-          const cloned = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, cloned));
-          return response;
+    (isCriticalAsset
+      ? fetch(event.request)
+          .then((response) => {
+            const cloned = response.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, cloned));
+            return response;
+          })
+          .catch(() => caches.match(event.request))
+      : caches.match(event.request).then((cached) => {
+          if (cached) return cached;
+          return fetch(event.request).then((response) => {
+            const cloned = response.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, cloned));
+            return response;
+          });
         })
-        .catch(() => caches.match("index.html"));
-    })
+    ).catch(() => caches.match("index.html"))
   );
 });

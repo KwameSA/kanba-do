@@ -185,7 +185,7 @@ function computeWeeklyReview(tasks, now = new Date()) {
     overdueCount,
     avgCycleCompletedThisWeek: cycleThisWeek.length ? average(cycleThisWeek) : null,
     topTagOfWeek: topTag,
-    bottleneck: topStagnantTag ? `Most stagnant tasks tagged: #${topStagnantTag}` : "No stagnant DOING cluster this week.",
+    bottleneck: topStagnantTag ? `Most idle DOING tasks tagged: #${topStagnantTag}` : "No idle DOING cluster this week.",
   };
 }
 

@@ -1,5 +1,6 @@
 import { initCommon } from "./page-common.js";
 import { writeTasksToStorage } from "./task-model.js";
+import { recomputeActivityMetrics } from "./activity-metrics.js";
 
 function bindImportExport() {
   const importButton = document.getElementById("import-btn");
@@ -12,6 +13,7 @@ function bindImportExport() {
       try {
         const tasks = JSON.parse(text);
         writeTasksToStorage(tasks);
+        recomputeActivityMetrics(tasks);
         document.getElementById("import-status").textContent = "Tasks imported successfully!";
       } catch (err) {
         document.getElementById("import-status").textContent = "Invalid JSON.";
@@ -33,6 +35,7 @@ function bindImportExport() {
         try {
           const tasks = JSON.parse(event.target.result);
           writeTasksToStorage(tasks);
+          recomputeActivityMetrics(tasks);
           document.getElementById("import-status").textContent = "Tasks imported successfully!";
         } catch (err) {
           document.getElementById("import-status").textContent = "Invalid file.";

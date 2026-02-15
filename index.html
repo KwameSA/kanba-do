@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
@@ -22,9 +22,12 @@
   </head>
   <body>
     <header class="main-nav">
-      <div class="nav-brand"><a href="index.html">Kanba-DO</a></div>
+      <div class="nav-brand">
+        <a href="index.html">Kanba-DO</a>
+      </div>
       <nav class="nav-links">
         <a class="active" data-i18n="Board" href="index.html">Board</a>
+        <a data-i18n="Rhythm" href="pages/rhythm.html">Rhythm</a>
         <a data-i18n="Settings" href="pages/settings.html">Settings</a>
         <a data-i18n="Analytics" href="pages/analytics.html">Analytics</a>
         <a data-i18n="Data" href="pages/import-export.html">Data</a>
@@ -32,7 +35,6 @@
         <a data-i18n="Help" href="pages/faqs.html">Help</a>
       </nav>
     </header>
-
     <div class="container">
       <div class="top-btn-container">
         <div class="top-btn-nav">
@@ -50,24 +52,23 @@
       </div>
       <p id="search-info">Titles of tasks whose descriptions or tags match are also included in the results.</p>
       <div id="date-filter-indicator" style="display: none">
-        Filter Active: <strong id="active-date-label"></strong>
+        Filter Active: <strong id="active-date-label"> </strong>
         <button id="clear-date-filter" type="button">Clear</button>
       </div>
       <div id="congratulations" style="display: none"></div>
       <div id="tag-filter-indicator" style="display: none">
-        Showing tasks tagged <strong id="active-tag-label"></strong>
+        Showing tasks tagged <strong id="active-tag-label"> </strong>
         <button id="clear-tag-filter">x</button>
       </div>
-
       <template id="task-template">
         <li class="task-item">
           <div class="task-header">
             <div class="task-content">
-              <span class="checkbox-icon"></span>
+              <span class="checkbox-icon"> </span>
               <span class="task-text" data-i18n="Sample Task">Sample Task</span>
             </div>
             <div class="task-controls">
-              <span class="priority-indicator priority-low"></span>
+              <span class="priority-indicator priority-low"> </span>
               <span class="delete">X</span>
               <span class="move" data-i18n="-">-</span>
             </div>
@@ -78,8 +79,21 @@
           </div>
         </li>
       </template>
-
       <div class="board-layout">
+        <aside class="board-rhythm" id="board-rhythm">
+          <section class="aside-card">
+            <h3>Rhythm Highlight</h3>
+            <p class="insights-empty">Your timing insights and experiment prompts appear here.</p>
+          </section>
+          <section class="aside-card hidden" id="insights-panel">
+            <h3 data-i18n="Here's what I noticed">Here's what I noticed</h3>
+            <ul id="insights-list"></ul>
+          </section>
+          <section class="aside-card hidden" id="suggestions-panel">
+            <h3 data-i18n="Possible experiments">Possible experiments</h3>
+            <ul id="suggestions-list"></ul>
+          </section>
+        </aside>
         <div class="board-main">
           <div class="do-container">
             <div class="todo-app">
@@ -112,7 +126,6 @@
               <ul id="do-container"></ul>
             </div>
           </div>
-
           <div class="doing-container">
             <div class="todoing-app">
               <div class="header">
@@ -121,7 +134,6 @@
               <ul id="doing-container"></ul>
             </div>
           </div>
-
           <div class="done-container">
             <div class="todone-app">
               <div class="header">
@@ -148,8 +160,7 @@
               <ul id="done-container"></ul>
             </div>
           </div>
-
-          <footer>Copyright Ac <span id="currentYear" style="padding: 0 5px"></span> KwameSA</footer>
+          <footer>Copyright <span id="currentYear" style="padding: 0 5px"> </span> KwameSA</footer>
         </div>
         <aside class="board-aside" id="board-aside">
           <button class="aside-close-btn" id="aside-close-btn" type="button">x</button>
@@ -169,7 +180,6 @@
           <button class="calendar-open-btn" id="open-calendar-btn" type="button">Calendar</button>
         </aside>
       </div>
-
       <div class="calendar-overlay hidden" id="calendar-overlay">
         <div class="calendar-panel">
           <div class="calendar-header">
@@ -178,7 +188,13 @@
             <button id="calendar-next" type="button">&gt;</button>
           </div>
           <div class="calendar-grid-head">
-            <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+            <span>Sun</span>
+            <span>Mon</span>
+            <span>Tue</span>
+            <span>Wed</span>
+            <span>Thu</span>
+            <span>Fri</span>
+            <span>Sat</span>
           </div>
           <div id="calendar-grid"></div>
           <div class="calendar-task-list" id="calendar-task-list"></div>
@@ -186,10 +202,10 @@
         </div>
       </div>
     </div>
-
     <div class="task-modal" id="taskModal">
       <div class="modal-content">
-        <h3 data-i18n="Edit Task">Edit Task</h3>
+        <h3 data-i18n="Task Details">Task Details</h3>
+        <p class="task-details-note">Details make Rhythm smarter (you can skip anytime).</p>
         <input data-i18n="Enter task name here..." id="modalTaskName" placeholder="Enter task name here..." type="text" />
         <textarea data-i18n="Describe your task with short notes..." id="modalTaskDescription" placeholder="Describe your task with short notes..."></textarea>
         <label data-i18n="Priority" for="modalTaskPriority">Priority</label>
@@ -198,6 +214,57 @@
           <option data-i18n="Medium" value="medium">Medium</option>
           <option data-i18n="High" value="high">High</option>
         </select>
+        <label data-i18n="Activity Type" for="modalActivityType">Activity Type</label>
+        <select id="modalActivityType">
+          <option data-i18n="None" value="">None</option>
+          <option data-i18n="Custom" value="custom">Custom</option>
+          <option data-i18n="Admin" value="Admin">Admin</option>
+          <option data-i18n="Creative" value="Creative">Creative</option>
+          <option data-i18n="Deep Work" value="Deep Work">Deep Work</option>
+          <option data-i18n="Errands" value="Errands">Errands</option>
+          <option data-i18n="Fitness" value="Fitness">Fitness</option>
+          <option data-i18n="Learning" value="Learning">Learning</option>
+          <option data-i18n="Rest" value="Rest">Rest</option>
+          <option data-i18n="Social" value="Social">Social</option>
+        </select>
+        <input data-i18n="Custom activity type" id="modalActivityCustom" placeholder="Custom activity type" style="display: none" type="text" />
+        <label data-i18n="Recurrence" for="modalRecurrenceType">Recurrence</label>
+        <select id="modalRecurrenceType">
+          <option data-i18n="None" value="">None</option>
+          <option data-i18n="Daily" value="daily">Daily</option>
+          <option data-i18n="Weekly" value="weekly">Weekly</option>
+          <option data-i18n="Custom days" value="custom">Custom days</option>
+        </select>
+        <div class="recurrence-days" id="modalRecurrenceDays" style="display: none">
+          <label class="recurrence-day">
+            <input type="checkbox" value="0" />
+            <span data-i18n="Sun">Sun</span>
+          </label>
+          <label class="recurrence-day">
+            <input type="checkbox" value="1" />
+            <span data-i18n="Mon">Mon</span>
+          </label>
+          <label class="recurrence-day">
+            <input type="checkbox" value="2" />
+            <span data-i18n="Tue">Tue</span>
+          </label>
+          <label class="recurrence-day">
+            <input type="checkbox" value="3" />
+            <span data-i18n="Wed">Wed</span>
+          </label>
+          <label class="recurrence-day">
+            <input type="checkbox" value="4" />
+            <span data-i18n="Thu">Thu</span>
+          </label>
+          <label class="recurrence-day">
+            <input type="checkbox" value="5" />
+            <span data-i18n="Fri">Fri</span>
+          </label>
+          <label class="recurrence-day">
+            <input type="checkbox" value="6" />
+            <span data-i18n="Sat">Sat</span>
+          </label>
+        </div>
         <label data-i18n="Due" for="modalTaskDueDate">Due</label>
         <input id="modalTaskDueDate" type="date" />
         <label for="modalTaskTags">Tags (comma separated)</label>
@@ -208,7 +275,6 @@
         </div>
       </div>
     </div>
-
     <div class="modal hidden" id="reset-modal">
       <div class="modal-content">
         <h3 data-i18n="Clear All Tasks?">Clear All Tasks?</h3>
@@ -220,7 +286,6 @@
         </div>
       </div>
     </div>
-
     <script type="module" src="js/main.js"></script>
   </body>
 </html>

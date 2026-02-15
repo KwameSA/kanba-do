@@ -12,6 +12,12 @@ function saveTask() {
     } catch {
       stageHistory = [];
     }
+    let recurrence = null;
+    try {
+      recurrence = JSON.parse(li.dataset.recurrence || "null");
+    } catch {
+      recurrence = null;
+    }
 
     return {
       id: li.dataset.taskId,
@@ -23,9 +29,12 @@ function saveTask() {
       dateAdded: li.dataset.dateAdded || li.dataset.createdAt || new Date().toISOString(),
       status: li.dataset.status,
       tags: li.dataset.tags || "",
+      activityType: li.dataset.activityType || "",
+      recurrence,
       completedAt: li.dataset.completedAt || null,
       createdAt: li.dataset.createdAt,
       updatedAt: li.dataset.updatedAt,
+      lastMovedAt: li.dataset.lastMovedAt,
       stageHistory,
     };
   });

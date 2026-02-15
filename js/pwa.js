@@ -1,4 +1,4 @@
-const CACHE_VERSION = "v1";
+const CACHE_VERSION = "v3";
 
 function updateNetworkStatus() {
   let badge = document.getElementById("network-status");

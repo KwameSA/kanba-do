@@ -10,7 +10,7 @@
 - **Add Tasks**: Create tasks directly in the "To Do" column.
 - **Drag & Drop**: Rearrange tasks between columns with ease.
 - **Click-to-Move**: Click a task to auto-advance its status.
-- **Edit Tasks**: Double-click a task to edit its contents.
+- **Task Details**: Double-click a task to edit its contents.
 - **Delete Tasks**: Use the delete icon (×) to remove tasks.
 - **Persistent Storage**: Tasks are saved using `localStorage` to retain data across sessions.
 

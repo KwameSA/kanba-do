@@ -5,6 +5,7 @@ import { saveDailySnapshot } from "./storage.js";
 import { initCommon } from "./page-common.js";
 import { bindModalEvents } from "./modals.js";
 import { initBoardAside } from "./board-aside.js";
+import { ensureSimulatedDatasetCurrent } from "./simulation.js";
 
 // Run everything only after DOM is ready
 window.addEventListener("DOMContentLoaded", () => {
@@ -15,6 +16,7 @@ window.addEventListener("DOMContentLoaded", () => {
   bindBoardEvents();
   bindDragDrop();
   initBoardAside();
+  ensureSimulatedDatasetCurrent();
 
   showTask();
   updateNotifications();

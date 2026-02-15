@@ -5,6 +5,10 @@ import { stringToColor, showError, getRandomMessage } from "./utils.js";
 import { renderWarnings } from "./analytics.js";
 import { setCurrentTaskElement } from "./modals.js";
 import { appendStageHistory, nowIso, readTasksFromStorage, statusToStage } from "./task-model.js";
+import { applyActivityToControls, getLastActivityType } from "./activity-types.js";
+import { getSuggestedActivityType } from "./tag-activity-map.js";
+import { getNextDueDateKey, normalizeRecurrence } from "./recurrence.js";
+import { applyRecurrenceToControls } from "./recurrence-ui.js";
 
 function getStageHistoryFromElement(li) {
   try {
@@ -19,19 +23,36 @@ function setStageHistoryOnElement(li, history) {
   li.dataset.stageHistory = JSON.stringify(history);
 }
 
+function getRecurrenceFromElement(li) {
+  try {
+    const parsed = JSON.parse(li.dataset.recurrence || "null");
+    return normalizeRecurrence(parsed);
+  } catch {
+    return null;
+  }
+}
+
+function setRecurrenceOnElement(li, recurrence) {
+  const normalized = normalizeRecurrence(recurrence);
+  li.dataset.recurrence = normalized ? JSON.stringify(normalized) : "";
+}
+
 function touchTaskElement(li, nextStatus = null) {
   const timestamp = nowIso();
   li.dataset.updatedAt = timestamp;
   if (!nextStatus) return;
+  li.dataset.lastMovedAt = timestamp;
 
   const currentTask = {
     status: li.dataset.status,
     stageHistory: getStageHistoryFromElement(li),
     createdAt: li.dataset.createdAt,
     updatedAt: li.dataset.updatedAt,
+    lastMovedAt: li.dataset.lastMovedAt,
   };
   const updated = appendStageHistory(currentTask, nextStatus, timestamp);
   setStageHistoryOnElement(li, updated.stageHistory);
+  return timestamp;
 }
 
 function applyStatusVisuals(li, status) {
@@ -77,6 +98,8 @@ export function createTaskElement(
   const tagContainer = li.querySelector(".task-tags");
   const createdAt = meta.createdAt || dateAdded || nowIso();
   const updatedAt = meta.updatedAt || createdAt;
+  const lastMovedAt = meta.lastMovedAt || createdAt;
+  const recurrence = normalizeRecurrence(meta.recurrence);
   const stageHistory =
     Array.isArray(meta.stageHistory) && meta.stageHistory.length
       ? meta.stageHistory
@@ -93,10 +116,13 @@ export function createTaskElement(
   li.dataset.checked = checked ? "true" : "false";
   li.dataset.dateAdded = dateAdded || createdAt;
   li.dataset.tags = tags;
+  li.dataset.activityType = meta.activityType || "";
   li.dataset.completedAt = meta.completedAt || "";
   li.dataset.createdAt = createdAt;
   li.dataset.updatedAt = updatedAt;
+  li.dataset.lastMovedAt = lastMovedAt;
   setStageHistoryOnElement(li, stageHistory);
+  setRecurrenceOnElement(li, recurrence);
   applyStatusVisuals(li, status);
   li.id = `task-node-${li.dataset.taskId}`;
   li.draggable = true;
@@ -123,13 +149,7 @@ export function createTaskElement(
 
   li.addEventListener("click", (e) => {
     if (e.target.closest(".delete, .move, .move-btn")) return;
-    setCurrentTaskElement(li);
-    elements.modalTaskName.value = taskText.textContent.trim();
-    elements.modalTaskPriority.value = li.dataset.priority || "low";
-    elements.modalTaskDescription.value = li.dataset.description || "";
-    elements.modalTaskDueDate.value = li.dataset.duedate || "";
-    elements.modalTaskTags.value = li.dataset.tags || "";
-    elements.taskModal.style.display = "flex";
+    openTaskModalForElement(li);
   });
 
   tagContainer.innerHTML = "";
@@ -156,16 +176,64 @@ export function createTaskElement(
   return li;
 }
 
+function openTaskModalForElement(li) {
+  if (!li) return;
+  setCurrentTaskElement(li);
+  if (!elements.taskModal) return;
+
+  const taskText = li.querySelector(".task-text");
+  if (elements.modalTaskName) elements.modalTaskName.value = taskText?.textContent.trim() || "";
+  if (elements.modalTaskPriority) elements.modalTaskPriority.value = li.dataset.priority || "low";
+  if (elements.modalTaskDescription) elements.modalTaskDescription.value = li.dataset.description || "";
+  if (elements.modalTaskDueDate) elements.modalTaskDueDate.value = li.dataset.duedate || "";
+  if (elements.modalTaskTags) elements.modalTaskTags.value = li.dataset.tags || "";
+  if (elements.modalActivityType) elements.modalActivityType.dataset.userTouched = "false";
+
+  const initialActivity = li.dataset.activityType || "";
+  if (elements.modalActivityType && elements.modalActivityCustom) {
+    applyActivityToControls(elements.modalActivityType, elements.modalActivityCustom, initialActivity);
+  }
+  if (elements.modalRecurrenceType && elements.modalRecurrenceDays) {
+    applyRecurrenceToControls(elements.modalRecurrenceType, elements.modalRecurrenceDays, getRecurrenceFromElement(li));
+  }
+  elements.taskModal.style.display = "flex";
+}
+
 export function moveTaskToStatus(li, nextStatus) {
   const currentStatus = li.dataset.status;
   if (currentStatus === nextStatus) return;
 
   containers[nextStatus].appendChild(li);
   applyStatusVisuals(li, nextStatus);
-  touchTaskElement(li, nextStatus);
+  const movedAt = touchTaskElement(li, nextStatus);
 
   if (nextStatus === "done") {
-    li.dataset.completedAt = nowIso();
+    li.dataset.completedAt = movedAt || nowIso();
+    const recurrence = getRecurrenceFromElement(li);
+    if (recurrence) {
+      const now = movedAt || nowIso();
+      const nextDue = li.dataset.duedate ? getNextDueDateKey(now, recurrence) : "";
+      const newTask = createTaskElement(
+        li.querySelector(".task-text").textContent.trim(),
+        "do",
+        li.dataset.priority || "low",
+        li.dataset.description || "",
+        nextDue,
+        false,
+        now,
+        li.dataset.tags || "",
+        {
+          createdAt: now,
+          updatedAt: now,
+          stageHistory: [{ stage: "DO", enteredAt: now }],
+          activityType: li.dataset.activityType || "",
+          recurrence,
+        }
+      );
+      containers.do.appendChild(newTask);
+    }
+  } else if (currentStatus === "done") {
+    li.dataset.completedAt = "";
   }
 
   updateDueStatus(li);
@@ -207,12 +275,15 @@ export function addEntry() {
 
   elements.errorMessage.style.display = "none";
   const now = nowIso();
+  const lastActivityType = getLastActivityType();
   const newTask = createTaskElement(taskText, "do", "low", "", "", false, now, "", {
     createdAt: now,
     updatedAt: now,
     stageHistory: [{ stage: "DO", enteredAt: now }],
+    activityType: "",
   });
   containers.do.appendChild(newTask);
+  openTaskModalForElement(newTask);
 
   elements.inputBox.value = "";
   saveTask();
@@ -246,6 +317,9 @@ export function showTask() {
       completedAt: task.completedAt,
       createdAt: task.createdAt,
       updatedAt: task.updatedAt,
+      lastMovedAt: task.lastMovedAt,
+      activityType: task.activityType,
+      recurrence: task.recurrence,
       stageHistory: task.stageHistory,
     });
     containers[section].appendChild(li);

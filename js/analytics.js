@@ -316,7 +316,7 @@ function renderWarnings() {
     `
         )
         .join("")
-    : `<p class="warning-item clear"><span class="warning-icon">OK</span> ${t("No stagnant tasks found!", "No stagnant tasks found!")}</p>`;
+    : `<p class="warning-item clear"><span class="warning-icon">OK</span> ${t("No stagnant tasks found!", "No idle tasks need attention right now!")}</p>`;
 
   document.getElementById("stagnant-warning-list").innerHTML = stagnantHTML;
 
