@@ -121,6 +121,15 @@ export function createTaskElement(
   li.dataset.createdAt = createdAt;
   li.dataset.updatedAt = updatedAt;
   li.dataset.lastMovedAt = lastMovedAt;
+  li.dataset.estimateMin = meta.estimateMin ?? "";
+  li.dataset.plannedStartAt = meta.plannedStartAt ?? "";
+  li.dataset.startedAt = meta.startedAt ?? "";
+  li.dataset.focusWindowMin = meta.focusWindowMin ?? "";
+  li.dataset.timeLogs = JSON.stringify(meta.timeLogs || []);
+  li.dataset.completionNote = meta.completionNote ?? "";
+  li.dataset.outcome = meta.outcome ?? "";
+  li.dataset.actualDurationMin = meta.actualDurationMin ?? "";
+  li.dataset.rhythm = JSON.stringify(meta.rhythm || {});
   setStageHistoryOnElement(li, stageHistory);
   setRecurrenceOnElement(li, recurrence);
   applyStatusVisuals(li, status);
@@ -321,6 +330,15 @@ export function showTask() {
       activityType: task.activityType,
       recurrence: task.recurrence,
       stageHistory: task.stageHistory,
+      estimateMin: task.estimateMin,
+      plannedStartAt: task.plannedStartAt,
+      startedAt: task.startedAt,
+      focusWindowMin: task.focusWindowMin,
+      timeLogs: task.timeLogs,
+      completionNote: task.completionNote,
+      outcome: task.outcome,
+      actualDurationMin: task.actualDurationMin,
+      rhythm: task.rhythm,
     });
     containers[section].appendChild(li);
   });

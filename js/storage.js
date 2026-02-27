@@ -18,6 +18,18 @@ function saveTask() {
     } catch {
       recurrence = null;
     }
+    let timeLogs = [];
+    try {
+      timeLogs = JSON.parse(li.dataset.timeLogs || "[]");
+    } catch {
+      timeLogs = [];
+    }
+    let rhythm = {};
+    try {
+      rhythm = JSON.parse(li.dataset.rhythm || "{}");
+    } catch {
+      rhythm = {};
+    }
 
     return {
       id: li.dataset.taskId,
@@ -36,6 +48,15 @@ function saveTask() {
       updatedAt: li.dataset.updatedAt,
       lastMovedAt: li.dataset.lastMovedAt,
       stageHistory,
+      estimateMin: li.dataset.estimateMin || null,
+      plannedStartAt: li.dataset.plannedStartAt || null,
+      startedAt: li.dataset.startedAt || null,
+      focusWindowMin: li.dataset.focusWindowMin || null,
+      timeLogs,
+      completionNote: li.dataset.completionNote || "",
+      outcome: li.dataset.outcome || null,
+      actualDurationMin: li.dataset.actualDurationMin || null,
+      rhythm,
     };
   });
 
