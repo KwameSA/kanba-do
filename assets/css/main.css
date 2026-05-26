@@ -970,14 +970,6 @@ li.checked .move-btn {
   padding: 24px;
 }
 
-.task-modal .modal-content {
-  width: 700px;
-  max-width: 90%;
-  max-height: calc(100vh - 48px);
-  overflow-y: auto;
-  box-sizing: border-box;
-}
-
 .modal-content {
   background-color: var(--card-bg);
   color: var(--text-color);
